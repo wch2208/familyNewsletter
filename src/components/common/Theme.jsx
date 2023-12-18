@@ -41,6 +41,7 @@ export const StyledChat = styled(Grid)(({ theme }) => ({
 /* eslint-disable react/prop-types */
 function Theme({ children }) {
   // theme 기본 값
+
   const theme = createTheme({
     //여기서 기본값 수정할 수 있음
   });
