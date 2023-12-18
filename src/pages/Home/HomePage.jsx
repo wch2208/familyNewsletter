@@ -4,7 +4,7 @@ import mainVideo from "../../assets/mainVideo.mp4";
 import ArrowDownwardTwoToneIcon from "@mui/icons-material/ArrowDownwardTwoTone";
 import CardComponent from "./components/CardComponent";
 import { Link } from "react-router-dom";
-// import BasicSpeedDial from "./components/SpeedDial";
+import BasicSpeedDial from "../../components/common/SpeedDial";
 
 function HomePage() {
   const [checked, setChecked] = useState(true);
@@ -138,7 +138,7 @@ function HomePage() {
               fontSize: "50px",
             }}
           />
-          {/* <BasicSpeedDial /> */}
+          <BasicSpeedDial />
         </Grid>
         <Grid container id="list-section">
           <Grid item xs={12}>

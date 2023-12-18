@@ -8,14 +8,20 @@ import {
   Grid,
   Button,
   Stack,
+  styled,
+  AppBar,
+  Toolbar,
+  Typography,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import OpenAI from "openai";
 import { useState, useEffect, useRef } from "react";
-import { StyledContainer, StyledChat } from "../../components/common/Theme";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate } from "react-router-dom";
 
 function ChatPage() {
+  const navigate = useNavigate();
   const apiKey = import.meta.env.VITE_API_KEY;
   const openai = new OpenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
   const [messageList, setMessageList] = useState([]);
@@ -23,6 +29,42 @@ function ChatPage() {
   const [loading, setLoading] = useState(false);
   const chatScrollRef = useRef(null);
   const inputRef = useRef("");
+
+  // ---------------------------- 채팅창 컨테이너 스타일 -------------------------------//
+  const StyledContainer = styled(Grid)(({ theme }) => ({
+    backgroundColor: "#bacee0",
+    height: "100vh",
+    width: "100vw",
+    maxWidth: "1024px",
+    margin: "0, auto",
+    paddingTop: "10px",
+    paddingLeft: "20px",
+    paddingRight: "20px",
+
+    // 미디어 쿼리를 사용하여 브레이크포인트에 따른 스타일 정의
+    [theme.breakpoints.up("md")]: {
+      border: "4px solid black",
+      borderRadius: "30px",
+      height: "84vh",
+      width: "900px",
+      margin: "auto",
+      marginTop: "5%",
+    },
+  }));
+
+  // ---------------------------- 대화창 컴포넌트 스타일 -------------------------------//
+  const StyledChat = styled(Grid)(({ theme }) => ({
+    maxHeight: "calc(84vh - 64px)",
+    minHeight: "calc(84vh - 64px)",
+    overflowY: "auto",
+    mb: 0.5,
+
+    // 미디어 쿼리를 사용하여 브레이크포인트에 따른 스타일 정의
+    [theme.breakpoints.up("md")]: {
+      maxHeight: "calc(64vh - 64px)",
+      minHeight: "calc(64vh - 64px)",
+    },
+  }));
 
   //스레드를 생성
   useEffect(() => {
@@ -34,7 +76,7 @@ function ChatPage() {
     }
 
     createThread();
-  }, [openai.beta.threads, threadId]);
+  }, [openai.beta, threadId]);
 
   //메세지 추가 시 스크롤 맨 아래로 이동
   useEffect(() => {
@@ -62,9 +104,18 @@ function ChatPage() {
     //run 상태 확인 반복 완료될 때 까지
     while (run.status !== "completed") {
       run = await openai.beta.threads.runs.retrieve(threadId, run.id);
+      console.log(run.status);
+      if (run.status === "failed") {
+        console.log("run failed");
+        //
+        window.location.reload(1);
+        break;
+      }
       //반복간격 0.5초
       await new Promise(resolve => setTimeout(resolve, 500));
     }
+
+    console.log("상태확인 통과");
 
     //실행 완료 후 메시지 출력
     const messages = await openai.beta.threads.messages.list(threadId);
@@ -76,27 +127,25 @@ function ChatPage() {
 
   return (
     <StyledContainer container justifyContent="center" alignItems="center">
-      <Grid
-        item
-        xs={12}
-        sx={{
-          textAlign: "center",
-          mb: 0.5,
-        }}
+      <AppBar
+        position="static"
+        sx={{ borderRadius: "30px", backgroundColor: "white" }}
       >
-        <Paper
-          elevation={6}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            p: "2px 4px",
-          }}
-        >
-          <ListItemText primary="시작을 누르고 인터뷰를 진행하세요." />
-          <ListItemText primary="완료를 누르면 기사를 작성합니다." />
-        </Paper>
-      </Grid>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            sx={{ color: "black", marginRight: "8px" }}
+            onClick={() => navigate(-1)}
+          >
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography sx={{ color: "black" }}>
+            Famaily Newsletter Interview
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      {/* <LongTextSnackbar /> */}
+
       <StyledChat id="chatScroll" item xs={12} ref={chatScrollRef}>
         <List>
           {messageList.map((data, index) =>
@@ -124,6 +173,7 @@ function ChatPage() {
           )}
         </List>
       </StyledChat>
+      {/* <CustomizedSnackbars /> */}
       <Grid item xs={12} sx={{ mb: 0.5 }}>
         <Stack spacing={2} direction="row" sx={{ justifyContent: "center" }}>
           <Button
@@ -134,6 +184,26 @@ function ChatPage() {
             }}
           >
             시작
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => {
+              handleSendMessage("내 이름은 테스터야");
+            }}
+          >
+            질문 1
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => {
+              handleSendMessage(
+                "나는 음악을 듣는 취미가 있어. 좋아하는 장르는 K-pop이야. 요즘은 르세라핌의 perfect night가 인기가 많더라. 오늘도 즐겁게 들었어."
+              );
+            }}
+          >
+            질문 2
           </Button>
 
           <Button
@@ -155,13 +225,12 @@ function ChatPage() {
             display: "flex",
             alignItems: "center",
             p: "2px 4px",
-            mb: 2,
             bgcolor: loading ? "gray" : false,
           }}
         >
           <InputBase
             fullWidth
-            placeholder="메시지를 입력하세요"
+            placeholder="메세지를 입력하세요."
             disabled={loading}
             sx={{ ml: 1, flex: 1 }}
             inputRef={inputRef}
