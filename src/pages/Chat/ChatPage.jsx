@@ -12,6 +12,7 @@ import {
   AppBar,
   Toolbar,
   Typography,
+  Box,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -19,6 +20,7 @@ import OpenAI from "openai";
 import { useState, useEffect, useRef } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function ChatPage() {
   const navigate = useNavigate();
@@ -29,6 +31,16 @@ function ChatPage() {
   const [loading, setLoading] = useState(false);
   const chatScrollRef = useRef(null);
   const inputRef = useRef("");
+  const [news, setNews] = useState({
+    id: 0,
+    title: "",
+    content: "",
+    author: "",
+  });
+
+  useEffect(() => {
+    console.log("업데이트된 news:", news);
+  }, [news]);
 
   // ---------------------------- 채팅창 컨테이너 스타일 -------------------------------//
   const StyledContainer = styled(Grid)(({ theme }) => ({
@@ -123,28 +135,64 @@ function ChatPage() {
     setMessageList([...messageList, messages.data[1], messages.data[0]]);
     inputRef.current.value = "";
     setLoading(false);
+
+    //id
+    console.log(messages);
+
+    //
+    setNews({
+      id: messages.data[0].id,
+      title: messages.data[0].content[0].text.value.split("|")[0],
+      content: messages.data[0].content[0].text.value.split("|")[1],
+    });
   }
+
+  const addNews = async news => {
+    try {
+      const response = await axios.post("http://localhost:5000/news", news);
+      console.log("Article added:", response.data); // 서버의 응답을 콘솔에 출력
+    } catch (error) {
+      console.error("Error fetching news:", error);
+    }
+  };
+  const getNews = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/news");
+      console.log("Article added:", response.data); // 서버의 응답을 콘솔에 출력
+    } catch (error) {
+      console.error("Error fetching news:", error);
+    }
+  };
 
   return (
     <StyledContainer container justifyContent="center" alignItems="center">
       <AppBar
         position="static"
-        sx={{ borderRadius: "30px", backgroundColor: "white" }}
+        sx={{ borderRadius: "10px", backgroundColor: "white" }}
       >
         <Toolbar>
           <IconButton
             edge="start"
-            sx={{ color: "black", marginRight: "8px" }}
+            sx={{ color: "black", marginRight: "8px", zIndex: 1 }}
             onClick={() => navigate(-1)}
           >
             <ArrowBackIcon />
           </IconButton>
-          <Typography sx={{ color: "black" }}>
-            Famaily Newsletter Interview
-          </Typography>
+          <Box
+            sx={{
+              width: "100vw",
+              left: 0,
+              justifyContent: "center",
+              display: "flex",
+              position: "fixed",
+            }}
+          >
+            <Typography sx={{ color: "black" }}>
+              Famaily Newsletter Interview
+            </Typography>
+          </Box>
         </Toolbar>
       </AppBar>
-      {/* <LongTextSnackbar /> */}
 
       <StyledChat id="chatScroll" item xs={12} ref={chatScrollRef}>
         <List>
@@ -173,7 +221,6 @@ function ChatPage() {
           )}
         </List>
       </StyledChat>
-      {/* <CustomizedSnackbars /> */}
       <Grid item xs={12} sx={{ mb: 0.5 }}>
         <Stack spacing={2} direction="row" sx={{ justifyContent: "center" }}>
           <Button
@@ -183,27 +230,19 @@ function ChatPage() {
               handleSendMessage("안녕?");
             }}
           >
-            시작
+            인터뷰 시작
           </Button>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={() => {
-              handleSendMessage("내 이름은 테스터야");
-            }}
-          >
-            질문 1
-          </Button>
+
           <Button
             variant="contained"
             size="small"
             onClick={() => {
               handleSendMessage(
-                "나는 음악을 듣는 취미가 있어. 좋아하는 장르는 K-pop이야. 요즘은 르세라핌의 perfect night가 인기가 많더라. 오늘도 즐겁게 들었어."
+                "안녕? 내 이름은 Tester, 근황에 대해서 이야기할게. 나는 지난주에 콘서트에 다녀왔어. 자주 듣는 곡이었지만 라이브로 들으면 평소와 다른 감동이 느껴져서 콘서트에 가는 것이 좋더라. 좋아하는 가수가 있다면 콘서트에 가는 것을 추천해!. 인터뷰 종료."
               );
             }}
           >
-            질문 2
+            테스트 실행
           </Button>
 
           <Button
@@ -213,7 +252,25 @@ function ChatPage() {
               handleSendMessage("인터뷰 종료");
             }}
           >
-            종료
+            뉴스 생성
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => {
+              addNews(news);
+            }}
+          >
+            addNews
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => {
+              getNews();
+            }}
+          >
+            getNews
           </Button>
         </Stack>
       </Grid>
