@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 
 const app = express();
-const port = 5000;
+const port = 80;
 
 app.use(cors());
 app.use(express.json());
@@ -19,6 +19,10 @@ app.use(express.json());
 const newsArticles = [
   // 추가적인 뉴스기사 객체를 여기에...
 ];
+
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
