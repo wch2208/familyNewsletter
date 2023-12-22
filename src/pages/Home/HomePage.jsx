@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Grid, Typography, Grow, Button } from "@mui/material";
+import { Grid, Typography, Grow, Button, styled } from "@mui/material";
 import mainVideo from "../../assets/mainVideo.mp4";
 import ArrowDownwardTwoToneIcon from "@mui/icons-material/ArrowDownwardTwoTone";
 import CardComponent from "./components/CardComponent";
@@ -9,9 +9,9 @@ import BasicSpeedDial from "../../components/common/SpeedDial";
 function HomePage() {
   const [checked, setChecked] = useState(true);
   const [title] = useState([
-    "1. 지속 가능한 미래를 위한 새로운 기술: 청정 에너지 혁신",
-    "2. 글로벌 건강 위기에 대응하는 혁신적인 의료 기술 개발 동향",
-    "3. 스마트 시티 기술의 발전과 도시 생활의 변화",
+    "라이브 콘서트, 음악으로 물드는 마음! ",
+    "빅테스트의 음악 여정,빅테스트의 음악 여정 ",
+    "구름 낀 하늘이 선사한 바다의 특별한 매력 ",
   ]); //api 데이터를 받아서 전역상태로 저장하자
 
   const [index, setIndex] = useState(0);
@@ -34,6 +34,23 @@ function HomePage() {
       }
     };
   }, [title.length]);
+
+  //------------------------- 제목 요약 슬라이드 ---------------------------//
+  const TitleSlide = styled(Typography)(({ theme }) => ({
+    position: "absolute",
+    left: "5%",
+    top: "240px",
+    color: "white",
+    width: "90vw",
+    overflow: "hidden",
+
+    // 미디어 쿼리를 사용하여 브레이크포인트에 따른 스타일 정의
+    [theme.breakpoints.up("sm")]: {
+      display: "flex",
+      justifyContent: "center",
+    },
+  }));
+  //------------------------- 제목 요약 슬라이드 ---------------------------//
 
   return (
     <>
@@ -72,21 +89,9 @@ function HomePage() {
             style={{ transformOrigin: "50% 100% 0" }}
             {...(checked ? { timeout: 1000 } : { timeout: 1000 })}
           >
-            <Typography
-              xs={12}
-              variant="h5"
-              noWrap={true}
-              sx={{
-                zIndex: 0,
-                position: "absolute",
-                top: "240px",
-                left: "20%",
-                color: "white",
-                width: "80%",
-              }}
-            >
+            <TitleSlide xs={12} variant="h5" noWrap={true}>
               {title[index]}
-            </Typography>
+            </TitleSlide>
           </Grow>
           <Typography
             xs={12}

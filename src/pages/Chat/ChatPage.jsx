@@ -31,16 +31,7 @@ function ChatPage() {
   const [loading, setLoading] = useState(false);
   const chatScrollRef = useRef(null);
   const inputRef = useRef("");
-  const [news, setNews] = useState({
-    id: 0,
-    title: "",
-    content: "",
-    author: "",
-  });
-
-  useEffect(() => {
-    console.log("업데이트된 news:", news);
-  }, [news]);
+  const [news, setNews] = useState({});
 
   // ---------------------------- 채팅창 컨테이너 스타일 -------------------------------//
   const StyledContainer = styled(Grid)(({ theme }) => ({
@@ -91,11 +82,18 @@ function ChatPage() {
   }, [openai.beta, threadId]);
 
   //메세지 추가 시 스크롤 맨 아래로 이동
+  function scrollDown() {
+    chatScrollRef.current.scrollTo({
+      top: chatScrollRef.current.scrollHeight,
+      behavior: "instant",
+    });
+  }
   useEffect(() => {
     if (chatScrollRef.current) {
-      const scrollHeight = chatScrollRef.current.scrollHeight;
-      const height = chatScrollRef.current.clientHeight;
-      chatScrollRef.current.scrollTop = scrollHeight - height;
+      chatScrollRef.current.scrollTo({
+        top: chatScrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
     }
   }, [messageList]);
 
@@ -107,6 +105,8 @@ function ChatPage() {
       role: "user",
       content: messageText,
     });
+
+    scrollDown();
 
     //run 실행
     let run = await openai.beta.threads.runs.create(threadId, {
@@ -121,13 +121,12 @@ function ChatPage() {
         console.log("run failed");
         //
         window.location.reload(1);
+        alert("assistant 통신에 문제가 발생하였습니다. 다시 시작합니다.");
         break;
       }
       //반복간격 0.5초
       await new Promise(resolve => setTimeout(resolve, 500));
     }
-
-    console.log("상태확인 통과");
 
     //실행 완료 후 메시지 출력
     const messages = await openai.beta.threads.messages.list(threadId);
@@ -136,17 +135,18 @@ function ChatPage() {
     inputRef.current.value = "";
     setLoading(false);
 
-    //id
-    console.log(messages);
-
-    //
-    setNews({
-      id: messages.data[0].id,
-      title: messages.data[0].content[0].text.value.split("|")[0],
-      content: messages.data[0].content[0].text.value.split("|")[1],
-    });
+    //답변이 "|"을 포함하고 있다면 news 상태 값에 저장한다. 이 값이 생성된 뉴스기사이다.
+    let newsResult = messages.data[0].content[0].text.value;
+    if (newsResult.includes("|")) {
+      setNews({
+        title: newsResult.split("|")[0],
+        content: newsResult.split("|")[1],
+        id: messages.data[0].id,
+      });
+    }
   }
 
+  //뉴스기사 저장
   const addNews = async news => {
     try {
       const response = await axios.post("http://localhost:5000/news", news);
@@ -155,6 +155,8 @@ function ChatPage() {
       console.error("Error fetching news:", error);
     }
   };
+
+  //뉴스기사 저장 상태 콘솔에서 확인
   const getNews = async () => {
     try {
       const response = await axios.get("http://localhost:5000/news");
