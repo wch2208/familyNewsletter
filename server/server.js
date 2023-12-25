@@ -24,6 +24,11 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+//GET /health 요청에 대해 200으로 응답하는 API
+app.get("/health", (req, res) => {
+  res.status(200).send("Success Health Check");
+});
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
