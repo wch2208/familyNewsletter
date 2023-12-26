@@ -1,5 +1,8 @@
 import express from "express";
 import cors from "cors";
+import multer from "multer";
+import multerS3 from "multer-s3";
+import { S3Client } from "@aws-sdk/client-s3";
 const app = express();
 const port = 80;
 import dotenv from "dotenv";
@@ -10,28 +13,39 @@ import { Sequelize } from "sequelize";
 app.use(cors());
 app.use(express.json());
 
-const name = process.env.DATABASE_NAME;
-const userName = process.env.DATABASE_USERNAME;
-const password = process.env.DATABASE_PASSWORD;
-const host = process.env.DATABASE_HOST;
-
-const sequelize = new Sequelize(name, userName, password, {
-  host: host,
-  dialect: "mysql",
+// //S3
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: process.env.VITE_AWS_ACCESS_KEY,
+    secretAccessKey: process.env.VITE_AWS_SECRET_ACCESS_KEY,
+  },
 });
 
-// 임시 뉴스기사 데이터
-/**
- {
-    id: number,
-    title: string,
-    content: string,
-    author: string,
-  },
- */
-const newsArticles = [
-  // 추가적인 뉴스기사 객체를 여기에...
-];
+// //S3 UPLOAD
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.VITE_AWS_S3_BUCKET,
+    key: function (req, file, cb) {
+      cb(null, file.originalname);
+    },
+  }),
+});
+
+app.post("/upload", upload.array("photos"), (req, res) => {
+  res.send(req.files);
+});
+
+//RDS
+const sequelize = new Sequelize(
+  process.env.VITE_DATABASE_NAME,
+  process.env.VITE_DATABASE_USERNAME,
+  process.env.VITE_DATABASE_PASSWORD,
+  {
+    host: process.env.VITE_DATABASE_HOST,
+    dialect: "mysql",
+  }
+);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -49,18 +63,31 @@ app.listen(port, async () => {
   } catch (error) {
     console.error("DB 연결 실패:", error);
   }
+  console.log(`Example app listening on port ${port}`);
 });
 
-// 뉴스기사 데이터를 조회하는 라우트
-app.get("/news", (req, res) => {
-  // 뉴스기사 데이터를 클라이언트에 전달
-  res.json(newsArticles);
+const NewsArticle = sequelize.define("NewsArticle", {
+  title: Sequelize.STRING,
+  content: Sequelize.TEXT,
+  author: Sequelize.STRING,
 });
 
-// 뉴스기사 데이터를 추가하는 라우트
-app.post("/news", (req, res) => {
-  // 클라이언트로부터 받은 데이터를 기사 목록에 추가
-  const newArticle = req.body; // 클라이언트의 요청 본문에서 새 기사 데이터를 가져옴
-  newsArticles.push(newArticle); // 기사 목록에 새 기사를 추가
-  res.json({ message: "뉴스기사가 추가되었습니다.", newArticle });
+sequelize.sync();
+
+app.post("/news", async (req, res) => {
+  try {
+    const article = await NewsArticle.create(req.body);
+    res.json(article);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+app.get("/news", async (req, res) => {
+  try {
+    const articles = await NewsArticle.findAll();
+    res.json(articles);
+  } catch (error) {
+    res.status(400).send(error);
+  }
 });
