@@ -1,11 +1,24 @@
 import express from "express";
 import cors from "cors";
-
 const app = express();
 const port = 80;
+import dotenv from "dotenv";
+dotenv.config();
+
+import { Sequelize } from "sequelize";
 
 app.use(cors());
 app.use(express.json());
+
+const name = process.env.DATABASE_NAME;
+const userName = process.env.DATABASE_USERNAME;
+const password = process.env.DATABASE_PASSWORD;
+const host = process.env.DATABASE_HOST;
+
+const sequelize = new Sequelize(name, userName, password, {
+  host: host,
+  dialect: "mysql",
+});
 
 // 임시 뉴스기사 데이터
 /**
@@ -29,8 +42,13 @@ app.get("/health", (req, res) => {
   res.status(200).send("Success Health Check");
 });
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+app.listen(port, async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("DB 연결 성공!");
+  } catch (error) {
+    console.error("DB 연결 실패:", error);
+  }
 });
 
 // 뉴스기사 데이터를 조회하는 라우트
