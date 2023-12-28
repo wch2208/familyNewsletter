@@ -44,10 +44,6 @@ const NewsArticle = sequelize.define("NewsArticle", {
     type: Sequelize.TEXT,
     allowNull: false,
   },
-  id: {
-    type: Sequelize.NUMBER,
-    allowNull: false,
-  },
 });
 
 // 데이터베이스와 모델 동기화
