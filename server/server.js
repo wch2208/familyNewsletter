@@ -17,11 +17,7 @@ const sequelize = new Sequelize(
 );
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
-app.get("/news", (req, res) => {
-  res.send("news 요청 받았음.");
+  res.send("Family Newsletter database");
 });
 
 app.get("/health", (req, res) => {
