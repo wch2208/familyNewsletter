@@ -24,6 +24,10 @@ app.get("/news", (req, res) => {
   res.send("news 요청 받았음.");
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).send("Success Health Check");
+});
+
 app.listen(port, async () => {
   try {
     await sequelize.authenticate();
