@@ -6,6 +6,7 @@ const app = express();
 const port = 80;
 dotenv.config();
 app.use(cors());
+app.use(express.json());
 
 const sequelize = new Sequelize(
   process.env.VITE_DATABASE_NAME,
