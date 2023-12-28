@@ -149,7 +149,10 @@ function ChatPage() {
   //뉴스기사 저장
   const addNews = async news => {
     try {
-      const response = await axios.post("http://3.36.32.17:80/news", news);
+      const response = await axios.post(
+        "https://api.familynewsletter-won.com/news",
+        news
+      );
       console.log("Article added:", response.data); // 서버의 응답을 콘솔에 출력
     } catch (error) {
       console.error("Error fetching news:", error);
@@ -159,7 +162,9 @@ function ChatPage() {
   //뉴스기사 저장 상태 콘솔에서 확인
   const getNews = async () => {
     try {
-      const response = await axios.get("http://3.36.32.17/news");
+      const response = await axios.get(
+        "https://api.familynewsletter-won.com/news"
+      );
       console.log("Article added:", response.data); // 서버의 응답을 콘솔에 출력
     } catch (error) {
       console.error("Error fetching news:", error);

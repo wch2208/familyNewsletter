@@ -1,10 +1,11 @@
-const app = express();
-const port = 80;
 import express from "express";
 import dotenv from "dotenv";
-dotenv.config();
-
+import cors from "cors";
 import { Sequelize } from "sequelize";
+const app = express();
+const port = 80;
+dotenv.config();
+app.use(cors());
 
 const sequelize = new Sequelize(
   process.env.VITE_DATABASE_NAME,
