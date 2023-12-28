@@ -1,19 +1,19 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config({ path: "../.env" });
+import express from "express";
 import cors from "cors";
 import { Sequelize } from "sequelize";
 const app = express();
 const port = 80;
-dotenv.config();
 app.use(cors());
 app.use(express.json());
 
 const sequelize = new Sequelize(
-  process.env.VITE_DATABASE_NAME,
-  process.env.VITE_DATABASE_USERNAME,
-  process.env.VITE_DATABASE_PASSWORD,
+  process.env.DATABASE_NAME,
+  process.env.DATABASE_USERNAME,
+  process.env.DATABASE_PASSWORD,
   {
-    host: process.env.VITE_DATABASE_HOST,
+    host: process.env.DATABASE_HOST,
     dialect: "mysql",
   }
 );
