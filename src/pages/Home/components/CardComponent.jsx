@@ -106,9 +106,13 @@ export default function CardComponent() {
     <Card
       sx={{
         maxWidth: "1024px",
-        minWidth: "375px",
+
         borderRadius: "50px",
-        margin: "20px auto",
+        // margin: "20px auto",
+        mt: "20px",
+        mb: "20px",
+        ml: "8px",
+        mr: "8px",
       }}
     >
       <CardHeader

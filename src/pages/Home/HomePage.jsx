@@ -9,6 +9,7 @@ import BasicSpeedDial from "../../components/common/SpeedDial";
 function HomePage() {
   const [checked, setChecked] = useState(true);
   const [title] = useState([
+    "1 콘서트의 마법, 라이브가 주는 감동",
     "라이브 콘서트, 음악으로 물드는 마음! ",
     "빅테스트의 음악 여정,빅테스트의 음악 여정 ",
     "구름 낀 하늘이 선사한 바다의 특별한 매력 ",
@@ -57,23 +58,31 @@ function HomePage() {
       <Grid
         id="outline"
         container
-        spacing={2}
         sx={{
           overflow: "hidden",
           backgroundColor: "#f2f2f2",
+          p: 0,
+          m: 0,
         }}
       >
         <Grid
           id="hero-section"
           container
-          spacing={2}
           sx={{
             overflow: "hidden",
             justifyContent: "center",
             mb: 1,
+            objectFit: "cover",
           }}
         >
-          <video autoPlay loop muted id="video" overflow="hidden">
+          <video
+            autoPlay
+            loop
+            muted
+            id="video"
+            overflow="hidden"
+            style={{ pointerEvents: "none" }}
+          >
             <source src={mainVideo} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
@@ -82,7 +91,7 @@ function HomePage() {
             variant="h2"
             sx={{ zIndex: 1, position: "absolute", top: "100px" }}
           >
-            Famaily Newsletter
+            Family Newsletter
           </Typography>
           <Grow
             in={checked}
@@ -146,12 +155,20 @@ function HomePage() {
           <BasicSpeedDial />
         </Grid>
         <Grid container id="list-section">
-          <Grid item xs={12}>
+          <Grid item xs={12} md={6}>
             {/* firebase에 저장한 데이터 불러와서 랜더링 */}
             <CardComponent />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            {/* firebase에 저장한 데이터 불러와서 랜더링 */}
             <CardComponent />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            {/* firebase에 저장한 데이터 불러와서 랜더링 */}
             <CardComponent />
-            <CardComponent />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            {/* firebase에 저장한 데이터 불러와서 랜더링 */}
             <CardComponent />
           </Grid>
         </Grid>

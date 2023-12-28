@@ -149,7 +149,7 @@ function ChatPage() {
   //뉴스기사 저장
   const addNews = async news => {
     try {
-      const response = await axios.post("http://localhost:5000/news", news);
+      const response = await axios.post("http://3.36.32.17:80/news", news);
       console.log("Article added:", response.data); // 서버의 응답을 콘솔에 출력
     } catch (error) {
       console.error("Error fetching news:", error);
@@ -159,7 +159,7 @@ function ChatPage() {
   //뉴스기사 저장 상태 콘솔에서 확인
   const getNews = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/news");
+      const response = await axios.get("http://3.36.32.17/news");
       console.log("Article added:", response.data); // 서버의 응답을 콘솔에 출력
     } catch (error) {
       console.error("Error fetching news:", error);
@@ -190,7 +190,7 @@ function ChatPage() {
             }}
           >
             <Typography sx={{ color: "black" }}>
-              Famaily Newsletter Interview
+              Family Newsletter Interview
             </Typography>
           </Box>
         </Toolbar>
@@ -261,6 +261,7 @@ function ChatPage() {
             size="small"
             onClick={() => {
               addNews(news);
+              console.log(news);
             }}
           >
             addNews
