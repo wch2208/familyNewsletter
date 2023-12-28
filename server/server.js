@@ -37,3 +37,68 @@ app.listen(port, async () => {
   }
   console.log(`Example app listening on port ${port}`);
 });
+
+// 모델 정의
+const NewsArticle = sequelize.define("NewsArticle", {
+  title: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  content: {
+    type: Sequelize.TEXT,
+    allowNull: false,
+  },
+  id: {
+    type: Sequelize.NUMBER,
+    allowNull: false,
+  },
+});
+
+// 데이터베이스와 모델 동기화
+sequelize.sync();
+
+app.post("/news", async (req, res) => {
+  try {
+    const article = await NewsArticle.create(req.body);
+    res.status(201).json(article);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+app.get("/news", async (req, res) => {
+  try {
+    const articles = await NewsArticle.findAll();
+    res.json(articles);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+app.put("/news/:id", async (req, res) => {
+  try {
+    const article = await NewsArticle.findByPk(req.params.id);
+    if (article) {
+      await article.update(req.body);
+      res.send(article);
+    } else {
+      res.status(404).send("Article not found");
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+app.delete("/news/:id", async (req, res) => {
+  try {
+    const article = await NewsArticle.findByPk(req.params.id);
+    if (article) {
+      await article.destroy();
+      res.send("Article deleted");
+    } else {
+      res.status(404).send("Article not found");
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
