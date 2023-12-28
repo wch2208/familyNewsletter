@@ -8,15 +8,19 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 
-const sequelize = new Sequelize(
-  process.env.VITE_DATABASE_NAME,
-  process.env.VITE_DATABASE_USERNAME,
-  process.env.VITE_DATABASE_PASSWORD,
-  {
-    host: process.env.VITE_DATABASE_HOST,
-    dialect: "mysql",
-  }
-);
+const sequelize = new Sequelize("familynewsletter", "admin", "FNkeepgoing90!", {
+  host: "familynewsletter-db.chaiy08u251d.ap-northeast-2.rds.amazonaws.com",
+  dialect: "mysql",
+});
+// const sequelize = new Sequelize(
+//   process.env.VITE_DATABASE_NAME,
+//   process.env.VITE_DATABASE_USERNAME,
+//   process.env.VITE_DATABASE_PASSWORD,
+//   {
+//     host: process.env.VITE_DATABASE_HOST,
+//     dialect: "mysql",
+//   }
+// );
 
 app.get("/", (req, res) => {
   res.send("Family Newsletter database");
