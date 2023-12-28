@@ -141,7 +141,6 @@ function ChatPage() {
       setNews({
         title: newsResult.split("|")[0],
         content: newsResult.split("|")[1],
-        id: messages.data[0].id,
       });
     }
   }
