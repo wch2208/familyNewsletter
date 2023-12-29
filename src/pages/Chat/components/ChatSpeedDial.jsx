@@ -6,6 +6,8 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import FastForwardIcon from "@mui/icons-material/FastForward";
+import { useState } from "react";
+import Backdrop from "@mui/material/Backdrop";
 
 export default function BasicSpeedDial({ news, onSendMessage, addNews }) {
   //PropTypes 정의
@@ -14,6 +16,10 @@ export default function BasicSpeedDial({ news, onSendMessage, addNews }) {
     onSendMessage: PropTypes.func,
     addNews: PropTypes.func,
   };
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const actions = [
     {
@@ -61,18 +67,24 @@ export default function BasicSpeedDial({ news, onSendMessage, addNews }) {
   ];
 
   return (
-    <SpeedDial
-      ariaLabel="SpeedDial basic"
-      sx={{ position: "fixed", bottom: "65px", right: "27px", zIndex: 3 }}
-      icon={<SpeedDialIcon />}
-    >
-      {actions.map(action => (
-        <SpeedDialAction
-          key={action.name}
-          icon={action.icon}
-          tooltipTitle={action.name}
-        />
-      ))}
-    </SpeedDial>
+    <>
+      <Backdrop open={open} />
+      <SpeedDial
+        ariaLabel="SpeedDial basic"
+        sx={{ position: "fixed", bottom: "65px", right: "27px", zIndex: 3 }}
+        icon={<SpeedDialIcon />}
+        onClose={handleClose}
+        onOpen={handleOpen}
+        open={open}
+      >
+        {actions.map(action => (
+          <SpeedDialAction
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+          />
+        ))}
+      </SpeedDial>
+    </>
   );
 }

@@ -95,6 +95,7 @@ function HomePage() {
         >
           <video
             autoPlay
+            playsInline
             loop
             muted
             id="video"

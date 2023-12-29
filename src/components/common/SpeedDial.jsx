@@ -11,10 +11,6 @@ export default function BasicSpeedDial() {
   };
 
   const actions = [
-    // { icon: <FileCopyIcon />, name: "Copy" },
-    // { icon: <SaveIcon />, name: "Save" },
-    // { icon: <PrintIcon />, name: "Print" },
-    // { icon: <ShareIcon />, name: "Share" },
     {
       icon: (
         <Link to="/chatpage" style={{ color: "inherit", marginTop: "6px" }}>
