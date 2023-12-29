@@ -8,12 +8,30 @@ import BasicSpeedDial from "../../components/common/SpeedDial";
 
 function HomePage() {
   const [checked, setChecked] = useState(true);
-  const [title] = useState([
-    "1 콘서트의 마법, 라이브가 주는 감동",
-    "라이브 콘서트, 음악으로 물드는 마음! ",
-    "빅테스트의 음악 여정,빅테스트의 음악 여정 ",
-    "구름 낀 하늘이 선사한 바다의 특별한 매력 ",
-  ]); //api 데이터를 받아서 전역상태로 저장하자
+  const [title, setTitle] = useState([]); //hero section에서 슬라이드 타이틀
+  const [data, setData] = useState([]); //RDS 뉴스 데이터
+
+  useEffect(() => {
+    // 뉴스 데이터를 불러오는 함수
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://api.familynewsletter-won.com/news"
+        );
+        const result = await response.json();
+        setData(result);
+        //resert.title 중에 인덱스 0~4까지만 따로 배열로 저장
+        const titleArray = result
+          .filter((v, i) => i < 5)
+          .map(item => item.title);
+        setTitle(titleArray);
+      } catch (error) {
+        console.error("데이터를 불러오는 데 실패했습니다.", error);
+      }
+    };
+
+    fetchData();
+  }, []); // 빈 배열을 전달하여 컴포넌트 마운트 시에만 실행
 
   const [index, setIndex] = useState(0);
   useEffect(() => {
@@ -155,22 +173,11 @@ function HomePage() {
           <BasicSpeedDial />
         </Grid>
         <Grid container id="list-section">
-          <Grid item xs={12} md={6}>
-            {/* firebase에 저장한 데이터 불러와서 랜더링 */}
-            <CardComponent />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            {/* firebase에 저장한 데이터 불러와서 랜더링 */}
-            <CardComponent />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            {/* firebase에 저장한 데이터 불러와서 랜더링 */}
-            <CardComponent />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            {/* firebase에 저장한 데이터 불러와서 랜더링 */}
-            <CardComponent />
-          </Grid>
+          {data.map(newsData => (
+            <Grid item xs={12} md={6} key={newsData.id}>
+              <CardComponent {...newsData} />
+            </Grid>
+          ))}
         </Grid>
       </Grid>
     </>
