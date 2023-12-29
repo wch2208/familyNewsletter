@@ -6,8 +6,6 @@ import {
   IconButton,
   Paper,
   Grid,
-  Button,
-  Stack,
   styled,
   AppBar,
   Toolbar,
@@ -21,6 +19,7 @@ import { useState, useEffect, useRef } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import BasicSpeedDial from "./components/ChatSpeedDial";
 
 function ChatPage() {
   const navigate = useNavigate();
@@ -158,18 +157,6 @@ function ChatPage() {
     }
   };
 
-  //뉴스기사 저장 상태 콘솔에서 확인
-  const getNews = async () => {
-    try {
-      const response = await axios.get(
-        "https://api.familynewsletter-won.com/news"
-      );
-      console.log("Article added:", response.data); // 서버의 응답을 콘솔에 출력
-    } catch (error) {
-      console.error("Error fetching news:", error);
-    }
-  };
-
   return (
     <StyledContainer container justifyContent="center" alignItems="center">
       <AppBar
@@ -227,60 +214,12 @@ function ChatPage() {
           )}
         </List>
       </StyledChat>
-      <Grid item xs={12} sx={{ mb: 0.5 }}>
-        <Stack spacing={2} direction="row" sx={{ justifyContent: "center" }}>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={() => {
-              handleSendMessage("안녕?");
-            }}
-          >
-            인터뷰 시작
-          </Button>
 
-          <Button
-            variant="contained"
-            size="small"
-            onClick={() => {
-              handleSendMessage(
-                "안녕? 내 이름은 Tester, 근황에 대해서 이야기할게. 나는 지난주에 콘서트에 다녀왔어. 자주 듣는 곡이었지만 라이브로 들으면 평소와 다른 감동이 느껴져서 콘서트에 가는 것이 좋더라. 좋아하는 가수가 있다면 콘서트에 가는 것을 추천해!. 인터뷰 종료."
-              );
-            }}
-          >
-            테스트 실행
-          </Button>
-
-          <Button
-            variant="contained"
-            size="small"
-            onClick={() => {
-              handleSendMessage("인터뷰 종료");
-            }}
-          >
-            뉴스 생성
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={() => {
-              addNews(news);
-              console.log(news);
-            }}
-          >
-            addNews
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={() => {
-              getNews();
-            }}
-          >
-            getNews
-          </Button>
-        </Stack>
-      </Grid>
+      <BasicSpeedDial
+        news={news}
+        onSendMessage={handleSendMessage}
+        addNews={addNews}
+      />
 
       <Grid item xs={12}>
         <Paper
@@ -288,15 +227,14 @@ function ChatPage() {
           sx={{
             display: "flex",
             alignItems: "center",
-            p: "2px 4px",
-            bgcolor: loading ? "gray" : false,
+            bgcolor: loading || messageList.length == 0 ? "gray" : false,
           }}
         >
           <InputBase
             fullWidth
-            placeholder="메세지를 입력하세요."
-            disabled={loading}
-            sx={{ ml: 1, flex: 1 }}
+            placeholder="위의 재생(시작)버튼으로 인터뷰 시작"
+            disabled={loading || messageList.length == 0}
+            sx={{ ml: 1 }}
             inputRef={inputRef}
             onKeyDown={e => {
               if (e.key === "Enter") {
@@ -304,7 +242,7 @@ function ChatPage() {
               }
             }}
           />
-          {loading ? (
+          {loading || messageList.length == 0 ? (
             <AccessTimeIcon />
           ) : (
             <IconButton
