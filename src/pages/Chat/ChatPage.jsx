@@ -68,8 +68,9 @@ function ChatPage() {
     },
   }));
 
-  //스레드를 생성
+  //스레드를 생성, 전체화면모드 on
   useEffect(() => {
+    document.documentElement.requestFullscreen();
     async function createThread() {
       if (threadId === "") {
         const thread = await openai.beta.threads.create();
