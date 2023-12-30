@@ -23,9 +23,26 @@ const newsSlice = createSlice({
     storeLatestFiveNewsTitles(state, action) {
       state.titleList = action.payload.slice(-5).map(news => news.title);
     },
-    // 삭제 후 감소하는 리듀서 함수
+    // 삭제 후 newsList가 감소하는 액션 크리에이터
+    storeDeleteNews(state, action) {
+      const id = action.payload;
+      state.newsList = state.newsList.filter(news => news.id !== id);
+    },
 
-    // 수정 후 뉴스목록 업데이트 리듀서 함수
+    // 수정 후 뉴스목록 업데이트 액션 크리에이터
+    storeUpdateNewsList(state, action) {
+      //전달 받은 객체를 하나의 변수에 할당한다.
+      const updatedNews = action.payload;
+
+      //업데이트 하려면 기존의 뉴스 목록에서 수정할 뉴스를 참조해야한다.
+      state.newsList = state.newsList.map(news => {
+        if (news.id === updatedNews.id) {
+          //기존의 목록에서 아이디가 일치하는 대상을 제거하고 업데이트뉴스를 그 자리에 넣는다.
+          return { ...news, ...updatedNews };
+        }
+        return news; // 기존의 뉴스 목록을 그대로 반환한다.
+      });
+    },
 
     // 무한스크롤 리듀서 함수
   },
@@ -46,6 +63,10 @@ const newsSlice = createSlice({
   },
 });
 
-export const { storeLatestFiveNewsTitles } = newsSlice.actions;
+export const {
+  storeLatestFiveNewsTitles,
+  storeDeleteNews,
+  storeUpdateNewsList,
+} = newsSlice.actions;
 
 export default newsSlice.reducer;

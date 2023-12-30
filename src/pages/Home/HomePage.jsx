@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import BasicSpeedDial from "../../components/common/SpeedDial";
-import NewsList from "../../features/news/NewsList";
+import ListSection from "./components/ListSection";
 import HeroSection from "./components/HeroSection";
 
 function HomePage() {
@@ -16,9 +16,7 @@ function HomePage() {
       }}
     >
       <HeroSection />
-      <Grid container id="list-section">
-        <NewsList />
-      </Grid>
+      <ListSection />
       <BasicSpeedDial />
     </Grid>
   );
