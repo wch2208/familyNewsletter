@@ -9,6 +9,7 @@ import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import LongMenu from "./EditBtn";
 
 //확장 버튼 애니메이션 스타일
 const ExpandMore = styled(props => {
@@ -92,6 +93,39 @@ export default function CardComponent(newsData) {
     setExpanded(!expanded);
   };
 
+  //본문 줄바꿈을 위한 배열 생성
+  const contentArr = newsData.content.split(".");
+
+  //게시물 작성 경과 시간 표시
+  function timeSince(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+
+    let interval = seconds / 31536000; // 1년의 초
+
+    if (interval > 1) {
+      return Math.floor(interval) + "년 전";
+    }
+    interval = seconds / 2592000; // 1달의 초
+    if (interval > 1) {
+      return Math.floor(interval) + "달 전";
+    }
+    interval = seconds / 86400; // 1일의 초
+    if (interval > 1) {
+      return Math.floor(interval) + "일 전";
+    }
+    interval = seconds / 3600; // 1시간의 초
+    if (interval > 1) {
+      return Math.floor(interval) + "시간 전";
+    }
+    interval = seconds / 60; // 1분의 초
+    if (interval > 1) {
+      return Math.floor(interval) + "분 전";
+    }
+    return Math.floor(seconds) + "초 전";
+  }
+
   return (
     <Card
       sx={{
@@ -103,11 +137,25 @@ export default function CardComponent(newsData) {
         mr: "8px",
       }}
     >
-      <CardHeader sx={{ ml: 2 }} title={newsData.title} />
-
+      <CardHeader sx={{ pl: 2, pr: 2, pb: 0 }} title={newsData.title} />
+      <CardContent
+        sx={{
+          m: 0,
+          p: 0,
+          height: "40px",
+          overflow: "hidden",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <LongMenu id={newsData.id} />
+        <Typography variant="caption" sx={{ p: 1 }}>
+          {timeSince(newsData.updatedAt)}
+        </Typography>
+      </CardContent>
       <CardMedia
         component="img"
-        height="400"
+        height={300}
         //랜덤이미지 또는 S3 버킷에 업로드한 이미지 삽입
         image={`https://picsum.photos/1920/1300?random=${newsData.id}`}
         alt="random_img"
@@ -135,10 +183,28 @@ export default function CardComponent(newsData) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent sx={{ ml: 5, mr: 5, p: 0 }}>
-          <AnimatedTypography expand={expanded}>
-            {newsData.content}
-          </AnimatedTypography>
+          {contentArr.map((content, index) => (
+            <AnimatedTypography
+              expand={expanded}
+              key={index}
+              sx={{ mt: "10px" }}
+            >
+              {content}.
+            </AnimatedTypography>
+          ))}
         </CardContent>
+        <CardActions disableSpacing>
+          <ExpandMore
+            sx={{ width: "100%" }}
+            disableRipple={true}
+            expand={expanded}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <ExpandMoreIcon />
+          </ExpandMore>
+        </CardActions>
       </Collapse>
     </Card>
   );
