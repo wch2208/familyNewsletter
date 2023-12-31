@@ -22,8 +22,8 @@ export default function EditCard({ id, editClose, editComplete }) {
   let newsData = useSelector(state => state.news.newsList);
   newsData = newsData.filter(news => news.id === id);
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useState(newsData[0].title);
+  const [content, setContent] = useState(newsData[0].content);
 
   //게시물 작성 경과 시간 표시
   function timeSince(dateString) {

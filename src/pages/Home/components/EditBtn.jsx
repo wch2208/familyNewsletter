@@ -23,9 +23,11 @@ export default function LongMenu(targetCard) {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -116,6 +118,10 @@ export default function LongMenu(targetCard) {
                 handleEditDel(e);
                 handleClose();
               }}
+              onTouchEnd={e => {
+                handleEditDel(e);
+                handleClose();
+              }}
               sx={{
                 justifyContent: "center",
                 color: option === "삭제 ( Delete )" ? "red" : "blue",
@@ -128,7 +134,7 @@ export default function LongMenu(targetCard) {
       </div>
       {editOn ? (
         <>
-          <Backdrop open={editOn} />{" "}
+          <Backdrop open={editOn} />
           <EditCard id={id} editClose={editClose} editComplete={editComplete} />
         </>
       ) : null}
