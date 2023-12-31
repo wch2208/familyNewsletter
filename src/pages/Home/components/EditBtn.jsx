@@ -9,12 +9,17 @@ import {
   storeDeleteNews,
   storeUpdateNewsList,
 } from "../../../features/news/newsSlice";
+import EditCard from "../components/EditCard";
+import { useState } from "react";
+import Backdrop from "@mui/material/Backdrop";
 
 const options = ["수정 ( Edit )", "삭제 ( Delete )"];
 
 const ITEM_HEIGHT = 48;
 
 export default function LongMenu(targetCard) {
+  const [editOn, setEditOn] = useState(false);
+  const [id, setId] = useState(0);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -25,12 +30,28 @@ export default function LongMenu(targetCard) {
     setAnchorEl(null);
   };
 
+  const editComplete = payload => {
+    dispatch(storeUpdateNewsList(payload));
+    //데이터베이스 수정 요청
+    const editNews = async id => {
+      try {
+        const response = await axios.put(
+          `https://api.familynewsletter-won.com/news/${id}`,
+          payload
+        );
+        console.log("Article edited:", response.data); // 서버의 응답을 콘솔에 출력
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      }
+    };
+    editNews(targetCard.id);
+  };
+
   function handleEditDel(e) {
     if (e.target.innerText === "수정 ( Edit )") {
       //여기는 수정 창 띄우기
-      //수정하기 창을 나타내려면 상태값을 통해 오픈상태를 감지해야한다. 그리고 오픈이 감지되면 id를 받아서 newsList 중 해당 id의 뉴스의 제목과 내용을 dialog의 form에 넣어줘야한다. 사용자가 일부 내용을 수정하고 완료버튼을 누르면 아래의 수정하기 로직을 수행한다.
-      //전역상태 newsList에 수정 요청 보내기 이것은 UpdatedFormDialog에서 완료버튼을 누를 때 동작
-      dispatch(storeUpdateNewsList(targetCard.id));
+      setId(targetCard.id);
+      setEditOn(true);
     }
 
     if (e.target.innerText === "삭제 ( Delete )") {
@@ -54,51 +75,63 @@ export default function LongMenu(targetCard) {
     }
   }
 
+  const editClose = () => {
+    setEditOn(false);
+  };
+
   return (
-    <div>
-      <IconButton
-        aria-label="more"
-        id="long-button"
-        aria-controls={open ? "long-menu" : undefined}
-        aria-expanded={open ? "true" : undefined}
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
-        <MoreVertIcon />
-      </IconButton>
-      <Menu
-        id="long-menu"
-        MenuListProps={{
-          "aria-labelledby": "long-button",
-        }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          style: {
-            maxHeight: ITEM_HEIGHT * 4.5,
-            width: "140px",
-          },
-        }}
-      >
-        {options.map(option => (
-          <MenuItem
-            id={targetCard.id}
-            key={option}
-            divider={true}
-            onClick={e => {
-              handleEditDel(e);
-              handleClose();
-            }}
-            sx={{
-              justifyContent: "center",
-              color: option === "삭제 ( Delete )" ? "red" : "blue",
-            }}
-          >
-            {option}
-          </MenuItem>
-        ))}
-      </Menu>
-    </div>
+    <>
+      <div>
+        <IconButton
+          aria-label="more"
+          id="long-button"
+          aria-controls={open ? "long-menu" : undefined}
+          aria-expanded={open ? "true" : undefined}
+          aria-haspopup="true"
+          onClick={handleClick}
+        >
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id="long-menu"
+          MenuListProps={{
+            "aria-labelledby": "long-button",
+          }}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          PaperProps={{
+            style: {
+              maxHeight: ITEM_HEIGHT * 4.5,
+              width: "140px",
+            },
+          }}
+        >
+          {options.map(option => (
+            <MenuItem
+              id={targetCard.id}
+              key={option}
+              divider={true}
+              onClick={e => {
+                handleEditDel(e);
+                handleClose();
+              }}
+              sx={{
+                justifyContent: "center",
+                color: option === "삭제 ( Delete )" ? "red" : "blue",
+              }}
+            >
+              {option}
+            </MenuItem>
+          ))}
+        </Menu>
+      </div>
+      {editOn ? (
+        <>
+          <Backdrop open={editOn} />{" "}
+          <EditCard id={id} editClose={editClose} editComplete={editComplete} />
+        </>
+      ) : null}
+    </>
   );
 }
