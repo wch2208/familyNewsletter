@@ -96,6 +96,12 @@ export default function CardComponent(newsData) {
   //본문 줄바꿈을 위한 배열 생성
   const contentArr = newsData.content.split(".");
 
+  //이미지 url 배열
+  const imageArr = newsData.imageUrl
+    ? newsData.imageUrl.split(";")
+    : ["https://picsum.photos/1920/1300"];
+
+  console.log("imageArr", imageArr);
   //게시물 작성 경과 시간 표시
   function timeSince(dateString) {
     const date = new Date(dateString);
@@ -137,12 +143,7 @@ export default function CardComponent(newsData) {
         mr: "8px",
       }}
     >
-      <CardHeader
-        // titleTypographyProps={{
-        //   width: "80vw",
-        // }}
-        title={newsData.title}
-      />
+      <CardHeader title={newsData.title} />
       <CardContent
         sx={{
           m: 0,
@@ -158,13 +159,18 @@ export default function CardComponent(newsData) {
           {timeSince(newsData.updatedAt)}
         </Typography>
       </CardContent>
-      <CardMedia
-        component="img"
-        sx={{ overflow: "hidden", height: "200px" }}
-        //랜덤이미지 또는 S3 버킷에 업로드한 이미지 삽입
-        image={`https://picsum.photos/1920/1300?random=${newsData.id}`}
-        alt="random_img"
-      />
+
+      {imageArr.map((url, index) => {
+        return (
+          <CardMedia
+            key={index}
+            component="img"
+            sx={{ overflow: "hidden", height: "200px" }}
+            image={url}
+            alt="random_img"
+          />
+        );
+      })}
 
       <CardContent
         onClick={handleExpandClick}

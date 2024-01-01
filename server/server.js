@@ -73,7 +73,7 @@ const NewsArticle = sequelize.define("NewsArticle", {
     allowNull: false,
   },
   imageUrl: {
-    type: Sequelize.STRING,
+    type: Sequelize.TEXT,
     allowNull: true,
   },
 });
