@@ -11,6 +11,8 @@ import {
   Toolbar,
   Typography,
   Box,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -20,7 +22,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BasicSpeedDial from "./components/ChatSpeedDial";
-//import Backdrop from "@mui/material";
+import InputFileUpload from "./components/UploadBtn";
 
 function ChatPage() {
   const navigate = useNavigate();
@@ -222,11 +224,12 @@ function ChatPage() {
             bgcolor: loading || messageList.length == 0 ? "gray" : false,
           }}
         >
+          <InputFileUpload />
           <InputBase
             fullWidth
             placeholder="위의 재생(시작)버튼으로 인터뷰 시작"
             disabled={loading || messageList.length == 0}
-            sx={{ ml: 1 }}
+            sx={{ ml: 0 }}
             inputRef={inputRef}
             onKeyDown={e => {
               if (e.key === "Enter") {
@@ -249,6 +252,9 @@ function ChatPage() {
           )}
         </Paper>
       </Grid>
+      <Backdrop open={loading} sx={{ zIndex: 3 }}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </StyledContainer>
   );
 }

@@ -99,7 +99,7 @@ export default function CardComponent(newsData) {
   //이미지 url 배열
   const imageArr = newsData.imageUrl
     ? newsData.imageUrl.split(";")
-    : ["https://picsum.photos/1920/1300"];
+    : [`https://picsum.photos/1920/1300?random=${newsData.id}`];
 
   console.log("imageArr", imageArr);
   //게시물 작성 경과 시간 표시
