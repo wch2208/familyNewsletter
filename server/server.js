@@ -60,9 +60,15 @@ app.post("/news", async (req, res) => {
   }
 });
 
-app.get("/news", async (req, res) => {
+app.get(`/news`, async (req, res) => {
+  const limit = req.query.limit ? parseInt(req.query.limit) : 10; // 한 페이지에 표시할 항목의 수
+  const offset = req.query.offset ? parseInt(req.query.offset) : 0; //건너뛸 항목의 수
   try {
-    const articles = await NewsArticle.findAll();
+    const articles = await NewsArticle.findAll({
+      limit: limit,
+      offset: offset,
+      order: [["createdAt", "DESC"]], // 최신 순으로 내림차순 정렬
+    });
     res.json(articles);
   } catch (error) {
     res.status(400).send(error);

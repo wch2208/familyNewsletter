@@ -44,6 +44,7 @@ export default function BasicSpeedDial({ news, onSendMessage, addNews }) {
         <SaveAsIcon
           onClick={() => {
             addNews(news);
+            window.location.href = "/";
           }}
         />
       ),
