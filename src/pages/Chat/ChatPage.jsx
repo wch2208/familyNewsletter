@@ -33,29 +33,17 @@ function ChatPage() {
   const [news, setNews] = useState({});
 
   // ---------------------------- 채팅창 컨테이너 스타일 -------------------------------//
-  const StyledContainer = styled(Grid)(({ theme }) => ({
+  const StyledContainer = styled(Grid)(() => ({
     backgroundColor: "#bacee0",
-    //height: "100vh",
     minHeight: "100vh",
     "@supports (-webkit-appearance:none) and (stroke-color: transparent)": {
       minHeight: "-webkit-fill-available",
     },
     width: "100vw",
-    maxWidth: "1024px",
     margin: "0, auto",
     paddingTop: "10px",
     paddingLeft: "20px",
     paddingRight: "20px",
-
-    // 미디어 쿼리를 사용하여 브레이크포인트에 따른 스타일 정의
-    [theme.breakpoints.up("md")]: {
-      border: "4px solid black",
-      borderRadius: "30px",
-      height: "84vh",
-      width: "900px",
-      margin: "auto",
-      marginTop: "5%",
-    },
   }));
 
   // ---------------------------- 대화창 컴포넌트 스타일 -------------------------------//
@@ -68,7 +56,6 @@ function ChatPage() {
     // 미디어 쿼리를 사용하여 브레이크포인트에 따른 스타일 정의
     [theme.breakpoints.up("md")]: {
       maxHeight: "calc(64vh - 64px)",
-      minHeight: "calc(64vh - 64px)",
     },
   }));
 
