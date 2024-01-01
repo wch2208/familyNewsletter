@@ -17,7 +17,7 @@
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.15.0",
     "@reduxjs/toolkit": "^2.0.1",
-    "aws-sdk": "^2.1525.0",
+    "aws-sdk": "^2.1528.0",
     "axios": "^1.6.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

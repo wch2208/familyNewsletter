@@ -138,9 +138,9 @@ export default function CardComponent(newsData) {
       }}
     >
       <CardHeader
-        titleTypographyProps={{
-          width: "80vw",
-        }}
+        // titleTypographyProps={{
+        //   width: "80vw",
+        // }}
         title={newsData.title}
       />
       <CardContent
@@ -160,7 +160,7 @@ export default function CardComponent(newsData) {
       </CardContent>
       <CardMedia
         component="img"
-        height={200}
+        sx={{ overflow: "hidden", height: "200px" }}
         //랜덤이미지 또는 S3 버킷에 업로드한 이미지 삽입
         image={`https://picsum.photos/1920/1300?random=${newsData.id}`}
         alt="random_img"

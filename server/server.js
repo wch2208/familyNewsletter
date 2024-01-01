@@ -1,5 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config({ path: "../.env" });
+import { S3Client } from "@aws-sdk/client-s3";
+import multer from "multer";
+import multerS3 from "multer-s3";
 import express from "express";
 import cors from "cors";
 import { Sequelize } from "sequelize";
@@ -7,6 +10,26 @@ const app = express();
 const port = 80;
 app.use(cors());
 app.use(express.json());
+
+//s3
+const s3 = new S3Client({
+  //
+  region: "ap-northeast-2",
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+  },
+});
+
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.AWS_S3_BUCKET,
+    key: function (req, file, cb) {
+      cb(null, file.originalname);
+    },
+  }),
+});
 
 const sequelize = new Sequelize(
   process.env.DATABASE_NAME,
@@ -27,6 +50,9 @@ app.get("/health", (req, res) => {
 });
 
 app.listen(port, async () => {
+  // 데이터베이스와 모델 동기화
+  await sequelize.sync();
+
   try {
     await sequelize.authenticate();
     console.log("DB 연결 성공!");
@@ -46,18 +72,10 @@ const NewsArticle = sequelize.define("NewsArticle", {
     type: Sequelize.TEXT,
     allowNull: false,
   },
-});
-
-// 데이터베이스와 모델 동기화
-sequelize.sync();
-
-app.post("/news", async (req, res) => {
-  try {
-    const article = await NewsArticle.create(req.body);
-    res.status(201).json(article);
-  } catch (error) {
-    res.status(400).send(error);
-  }
+  imageUrl: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
 });
 
 app.get(`/news`, async (req, res) => {
@@ -70,6 +88,28 @@ app.get(`/news`, async (req, res) => {
       order: [["createdAt", "DESC"]], // 최신 순으로 내림차순 정렬
     });
     res.json(articles);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+app.post("/news", upload.array("photos"), async (req, res) => {
+  let imageUrls = [];
+  if (req.files && req.files.length > 0) {
+    imageUrls = req.files.map(file => file.location);
+  } else {
+    imageUrls = ["https://picsum.photos/1920/1300"];
+  }
+
+  try {
+    const newArticleData = {
+      title: req.body.title,
+      content: req.body.content,
+      imageUrl: imageUrls.join(";"),
+    };
+
+    const newArticle = await NewsArticle.create(newArticleData);
+    res.status(201).json(newArticle);
   } catch (error) {
     res.status(400).send(error);
   }
