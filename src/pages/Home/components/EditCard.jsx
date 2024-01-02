@@ -6,10 +6,10 @@ import CardContent from "@mui/material/CardContent";
 import Collapse from "@mui/material/Collapse";
 import Typography from "@mui/material/Typography";
 import LongMenu from "./EditBtn";
-import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
 import { Stack, TextareaAutosize } from "@mui/material";
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 EditCard.propTypes = {
   id: PropTypes.number.isRequired, // Use the appropriate type
