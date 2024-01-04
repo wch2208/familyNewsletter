@@ -21,6 +21,8 @@ const VisuallyHiddenInput = styled("input")({
 
 export default function InputFileUpload({ onFileSelect }) {
   const handleFileChange = e => {
+    //초기화
+    onFileSelect([]);
     //onFileSelect(...e.target.files); 이것은 단일 파일 업로드 방식
     onFileSelect([...e.target.files]); //여러 파일을 업로드하려고 한다.
   };

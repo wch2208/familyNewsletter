@@ -26,7 +26,7 @@ const TextSlide = () => {
             style={{
               marginBottom: "30px",
               fontSize: "1.5rem",
-              color: "HighlightText",
+              color: "#ffffff",
               overflow: "hidden",
               width: "90vw",
               whiteSpace: "nowrap",

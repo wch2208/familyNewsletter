@@ -1,4 +1,5 @@
 import {
+  Badge,
   List,
   ListItem,
   ListItemText,
@@ -15,6 +16,7 @@ import {
   CircularProgress,
   Button,
   Stack,
+  Fab,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -237,51 +239,99 @@ function ChatPage() {
       </StyledChat>
 
       {end ? (
-        <Button
-          variant="contained"
-          onClick={() => {
-            setEnd(false);
-            addNews(news, selectedFile);
-            //window.location.href = "/";
+        <Fab
+          color="primary"
+          variant="extended"
+          sx={{
+            position: "fixed",
+            left: "30%",
+            bottom: "70px",
+            zIndex: 1,
           }}
         >
-          이 인터뷰 결과를 게시하기
-        </Button>
-      ) : messageList.length === 0 ? (
-        <Stack direction="row">
           <Button
-            variant="contained"
+            variant="text"
+            sx={{ color: "white" }}
             onClick={() => {
-              handleSendMessage("안녕?");
+              setEnd(false);
+              addNews(news, selectedFile);
+              window.location.href = "/";
             }}
           >
-            시작하기
+            이 인터뷰 결과를 게시하기
           </Button>
+        </Fab>
+      ) : messageList.length === 0 ? (
+        <Stack direction="row">
+          <Fab
+            color="primary"
+            variant="extended"
+            sx={{
+              position: "fixed",
+              left: "30%",
+              bottom: "70px",
+              zIndex: 1,
+            }}
+          >
+            <Button
+              position="absolute"
+              variant="text"
+              sx={{ color: "white" }}
+              onClick={() => {
+                handleSendMessage("안녕?");
+              }}
+            >
+              시작하기
+            </Button>
+          </Fab>
+          <Fab
+            color="primary"
+            variant="extended"
+            sx={{
+              position: "fixed",
+              left: "50%",
+              bottom: "70px",
+              zIndex: 1,
+            }}
+          >
+            <Button
+              variant="text"
+              sx={{ color: "white" }}
+              onClick={() => {
+                handleSendMessage(
+                  "안녕? 내 이름은 Tester, 근황에 대해서 이야기할게. 나는 지난주에 콘서트에 다녀왔어. 자주 듣는 곡이었지만 라이브로 들으면 평소와 다른 감동이 느껴져서 콘서트에 가는 것이 좋더라. 좋아하는 가수가 있다면 콘서트에 가는 것을 추천해"
+                );
+              }}
+            >
+              테스트 실행
+            </Button>
+          </Fab>
+        </Stack>
+      ) : (
+        <Fab
+          color="primary"
+          variant="extended"
+          sx={{
+            position: "fixed",
+            right: 10,
+            bottom: "70px",
+            zIndex: 1,
+          }}
+        >
           <Button
-            variant="outlined"
+            variant="text"
+            sx={{ color: "white" }}
             onClick={() => {
-              handleSendMessage(
-                "안녕? 내 이름은 Tester, 근황에 대해서 이야기할게. 나는 지난주에 콘서트에 다녀왔어. 자주 듣는 곡이었지만 라이브로 들으면 평소와 다른 감동이 느껴져서 콘서트에 가는 것이 좋더라. 좋아하는 가수가 있다면 콘서트에 가는 것을 추천해"
+              handleSendMessage("인터뷰 종료");
+              setEnd(true);
+              alert(
+                "인터뷰를 종료합니다. 이제 챗봇이 기사를 작성합니다. 결과를 포스팅하려면 저장버튼을 누르세요."
               );
             }}
           >
-            테스트 실행
+            인터뷰 종료
           </Button>
-        </Stack>
-      ) : (
-        <Button
-          variant="contained"
-          sx={{ height: "36px", fontSize: "14px" }}
-          onClick={() => {
-            handleSendMessage("인터뷰 종료");
-            setEnd(true);
-            alert(
-              "인터뷰를 종료합니다. 이제 챗봇이 기사를 작성합니다. 결과를 포스팅하려면 저장버튼을 누르세요."
-            );
-          }}
-        >
-          인터뷰 끝내기
-        </Button>
+        </Fab>
       )}
 
       <Grid item xs={12}>
@@ -293,10 +343,18 @@ function ChatPage() {
             bgcolor: loading || messageList.length == 0 ? "gray" : false,
           }}
         >
-          <InputFileUpload onFileSelect={handleFileSelect} />
+          <Badge
+            badgeContent={selectedFile.length}
+            color="secondary"
+            sx={{ position: "relative", width: "50px", mr: 2 }}
+          >
+            <InputFileUpload onFileSelect={handleFileSelect} />
+          </Badge>
 
           <InputBase
             fullWidth
+            autoFocus={true}
+            multiline={true}
             placeholder="메세지를 입력하세요."
             disabled={loading || messageList.length == 0}
             sx={{ ml: 0 }}
@@ -308,11 +366,11 @@ function ChatPage() {
             }}
           />
           {loading || messageList.length == 0 ? (
-            <AccessTimeIcon />
+            <AccessTimeIcon sx={{ mr: 1.5 }} />
           ) : (
             <IconButton
               color="primary"
-              sx={{ p: "10px" }}
+              sx={{ p: "10px", mr: 1.5 }}
               onClick={() => {
                 handleSendMessage(inputRef.current.value);
               }}
@@ -322,8 +380,8 @@ function ChatPage() {
           )}
         </Paper>
       </Grid>
-      <Backdrop open={loading} sx={{ zIndex: 3 }}>
-        <CircularProgress color="inherit" />
+      <Backdrop open={loading} sx={{ zIndex: 10 }}>
+        <CircularProgress color="primary" />
       </Backdrop>
     </StyledContainer>
   );
