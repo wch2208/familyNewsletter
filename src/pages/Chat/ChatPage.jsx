@@ -244,8 +244,11 @@ function ChatPage() {
           variant="extended"
           sx={{
             position: "fixed",
-            left: "30%",
-            bottom: "70px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            top: "13%",
+            width: "59%",
+            height: "5%",
             zIndex: 1,
           }}
         >
@@ -255,7 +258,10 @@ function ChatPage() {
             onClick={() => {
               setEnd(false);
               addNews(news, selectedFile);
-              window.location.href = "/";
+              setLoading(true);
+              setTimeout(() => {
+                window.location.href = "/";
+              }, 2000);
             }}
           >
             이 인터뷰 결과를 게시하기
@@ -268,8 +274,10 @@ function ChatPage() {
             variant="extended"
             sx={{
               position: "fixed",
-              left: "30%",
-              bottom: "70px",
+              height: "5%",
+              left: "50%",
+              transform: "translateX(-50%)",
+              bottom: "50%",
               zIndex: 1,
             }}
           >
@@ -281,7 +289,7 @@ function ChatPage() {
                 handleSendMessage("안녕?");
               }}
             >
-              시작하기
+              인터뷰 시작
             </Button>
           </Fab>
           <Fab
@@ -289,8 +297,10 @@ function ChatPage() {
             variant="extended"
             sx={{
               position: "fixed",
+              height: "5%",
               left: "50%",
-              bottom: "70px",
+              transform: "translateX(-50%)",
+              bottom: "40%",
               zIndex: 1,
             }}
           >
@@ -313,8 +323,10 @@ function ChatPage() {
           variant="extended"
           sx={{
             position: "fixed",
-            right: 10,
-            bottom: "70px",
+            height: "5%",
+            left: "50%",
+            transform: "translateX(-50%)",
+            top: "13%",
             zIndex: 1,
           }}
         >
@@ -324,9 +336,6 @@ function ChatPage() {
             onClick={() => {
               handleSendMessage("인터뷰 종료");
               setEnd(true);
-              alert(
-                "인터뷰를 종료합니다. 이제 챗봇이 기사를 작성합니다. 결과를 포스팅하려면 저장버튼을 누르세요."
-              );
             }}
           >
             인터뷰 종료
@@ -350,6 +359,25 @@ function ChatPage() {
           >
             <InputFileUpload onFileSelect={handleFileSelect} />
           </Badge>
+          {selectedFile.length > 0 ? (
+            <Fab
+              color="secondary"
+              variant="extended"
+              sx={{
+                position: "fixed",
+                left: 20,
+                bottom: "70px",
+                zIndex: 1,
+                fontSize: "10px",
+                height: "25px",
+              }}
+              onClick={() => {
+                setSelectedFile([]);
+              }}
+            >
+              삭제
+            </Fab>
+          ) : null}
 
           <InputBase
             fullWidth

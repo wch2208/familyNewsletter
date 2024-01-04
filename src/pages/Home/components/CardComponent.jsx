@@ -101,7 +101,6 @@ export default function CardComponent(newsData) {
     ? newsData.imageUrl.split(";")
     : [`https://picsum.photos/1920/1300?random=${newsData.id}`];
 
-  console.log("imageArr", imageArr);
   //게시물 작성 경과 시간 표시
   function timeSince(dateString) {
     const date = new Date(dateString);
