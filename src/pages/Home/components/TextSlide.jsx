@@ -16,7 +16,12 @@ const TextSlide = () => {
 
   return (
     <>
-      <Box sx={{ position: "absolute", top: "700px" }}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "700px",
+        }}
+      >
         {titleList.map((line, index) => (
           <motion.div
             key={index}

@@ -85,7 +85,7 @@ app.get(`/news`, async (req, res) => {
     const articles = await NewsArticle.findAll({
       limit: limit,
       offset: offset,
-      order: [["createdAt", "DESC"]], // 최신 순으로 내림차순 정렬
+      order: [["updatedAt", "DESC"]], // 최신 순으로 내림차순 정렬
     });
     res.json(articles);
   } catch (error) {

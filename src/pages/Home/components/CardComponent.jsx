@@ -10,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LongMenu from "./EditBtn";
+import { useTheme } from "@mui/material";
 
 //확장 버튼 애니메이션 스타일
 const ExpandMore = styled(props => {
@@ -87,6 +88,8 @@ const AnimatedTypography = styled(props => {
 }));
 
 export default function CardComponent(newsData) {
+  const theme = useTheme();
+
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -94,7 +97,7 @@ export default function CardComponent(newsData) {
   };
 
   //본문 줄바꿈을 위한 배열 생성
-  const contentArr = newsData.content.split(".");
+  const contentArr = newsData.content.split("\n");
 
   //이미지 url 배열
   const imageArr = newsData.imageUrl
@@ -134,12 +137,14 @@ export default function CardComponent(newsData) {
   return (
     <Card
       sx={{
-        maxWidth: "1024px",
+        maxWidth: "1920px",
         borderRadius: "50px",
         mt: "20px",
         mb: "20px",
-        ml: "8px",
-        mr: "8px",
+        ml: "auto",
+        mr: "auto",
+        pr: "20px",
+        pl: "20px",
       }}
     >
       <CardHeader title={newsData.title} />
@@ -164,7 +169,17 @@ export default function CardComponent(newsData) {
           <CardMedia
             key={index}
             component="img"
-            sx={{ overflow: "hidden", height: "200px" }}
+            sx={{
+              overflow: "hidden",
+              objectPosition: "center",
+              height: "200px",
+              [theme.breakpoints.up("sm")]: {
+                height: "600px",
+              },
+              [theme.breakpoints.up("md")]: {
+                height: "800px",
+              },
+            }}
             image={url}
             alt="random_img"
           />
@@ -199,7 +214,7 @@ export default function CardComponent(newsData) {
               key={index}
               sx={{ mt: "10px", overflow: "hidden" }}
             >
-              {content}.
+              {content}
             </AnimatedTypography>
           ))}
         </CardContent>

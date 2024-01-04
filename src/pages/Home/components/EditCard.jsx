@@ -71,7 +71,7 @@ export default function EditCard({ id, editClose, editComplete }) {
         title={
           <TextareaAutosize
             defaultValue={newsData[0].title}
-            style={{ fontSize: "20px", width: "100%" }}
+            style={{ fontSize: "16px", width: "100%" }}
             maxRows={2}
             onChange={e => setTitle(e.target.value)}
           />
@@ -88,6 +88,7 @@ export default function EditCard({ id, editClose, editComplete }) {
         }}
       >
         <LongMenu id={newsData[0].id} />
+
         <Typography variant="caption" sx={{ p: 1 }}>
           {timeSince(newsData[0].updatedAt)}
         </Typography>
@@ -96,7 +97,7 @@ export default function EditCard({ id, editClose, editComplete }) {
         component="img"
         height={300}
         //랜덤이미지 또는 S3 버킷에 업로드한 이미지 삽입
-        image={`https://picsum.photos/1920/1300?random=${newsData[0].id}`}
+        image={newsData[0].imageUrl}
         alt="random_img"
       />
       <Collapse in={true} timeout="auto" unmountOnExit>
@@ -105,7 +106,7 @@ export default function EditCard({ id, editClose, editComplete }) {
         >
           <TextareaAutosize
             defaultValue={newsData[0].content}
-            style={{ fontSize: "24px" }}
+            style={{ fontSize: "14px" }}
             maxRows={10}
             onChange={e => setContent(e.target.value)}
           />
