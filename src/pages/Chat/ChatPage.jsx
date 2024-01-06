@@ -42,11 +42,6 @@ function ChatPage() {
   const [selectedFile, setSelectedFile] = useState([]);
   const dispatch = useDispatch();
 
-  //파일첨부하면 상태데이터로 등록되는지 확인
-  useEffect(() => {
-    console.log("selectedFile 파일첨부:", selectedFile);
-  }, [selectedFile]);
-
   // ---------------------------- 채팅창 컨테이너 스타일 -------------------------------//
   const StyledContainer = styled(Grid)(() => ({
     backgroundColor: "#bacee0",
@@ -123,8 +118,6 @@ function ChatPage() {
       run = await openai.beta.threads.runs.retrieve(threadId, run.id);
       console.log(run.status);
       if (run.status === "failed") {
-        console.log("run failed");
-        //
         window.location.reload(1);
         alert("assistant 통신에 문제가 발생하였습니다. 다시 시작합니다.");
         break;

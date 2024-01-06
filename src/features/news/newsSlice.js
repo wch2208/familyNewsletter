@@ -44,7 +44,6 @@ export const addNews = createAsyncThunk(
         }
       );
 
-      console.log("addNews response data:", response.data);
       return response.data;
     } catch (error) {
       console.log("addNews error: ", error);
@@ -56,13 +55,6 @@ export const updateNews = createAsyncThunk(
   "news/updateNews",
   async ({ id, title, content, files }, { rejectWithValue }) => {
     try {
-      console.log(
-        "업데이트 뉴스 액션크리에이터에 전달된 인자:",
-        typeof id,
-        typeof title,
-        typeof content,
-        typeof files
-      );
       const formData = new FormData();
       formData.append("title", title);
       formData.append("content", content);
@@ -73,9 +65,6 @@ export const updateNews = createAsyncThunk(
         });
       }
 
-      for (let [key, value] of formData.entries()) {
-        console.log("api 통신 시작!!", key, value);
-      }
       const response = await axios.put(
         `https://api.familynewsletter-won.com/news/${id}`,
         formData,
@@ -85,7 +74,6 @@ export const updateNews = createAsyncThunk(
           },
         }
       );
-      console.log("updateNews response data:", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -136,7 +124,6 @@ const newsSlice = createSlice({
         // 리미트로 5개를 가져오는데, 실제로 가져온 데이터(action.payload)가 5보다 적으면
         // fasle로 변하면서 더이상 next 속성이 동작하지 않는다.
         state.hasMore = action.payload.length === newsPerPage;
-        console.log("여기는 fetchNews 성공 builder:", action.payload);
       })
       .addCase(fetchNews.rejected, (state, action) => {
         state.status = "failed";
@@ -145,7 +132,6 @@ const newsSlice = createSlice({
       .addCase(updateNews.fulfilled, (state, action) => {
         // 업데이트된 뉴스로 상태를 업데이트
         const updatedNews = action.payload;
-        console.log("여기는 updateNews 성공 builder:", updatedNews);
         state.newsList = state.newsList.map(news =>
           news.id === updatedNews.id ? { ...news, ...updatedNews } : news
         );

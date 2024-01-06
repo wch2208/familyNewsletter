@@ -30,11 +30,6 @@ export default function LongMenu(targetCard) {
     setAnchorEl(null);
   };
 
-  // const editComplete = data => {
-  //   console.log("디스패치 전 최종 데이터:", data);
-  //   //dispatch(updateNews(data));
-  // };
-
   function handleEditDel(e) {
     if (e.target.innerText === "수정 ( Edit )") {
       //여기는 수정 창 띄우기

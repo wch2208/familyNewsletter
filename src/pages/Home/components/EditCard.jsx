@@ -20,14 +20,6 @@ EditCard.propTypes = {
   editClose: PropTypes.func.isRequired,
 };
 
-/**
- * EditCard 컴포넌트는 뉴스 기사의 제목과 내용을 수정할 수 있는 카드 형태의 UI를 제공합니다.
- * 이 컴포넌트는 기사의 id를 받아 해당 뉴스 데이터를 참조하며,
- * 수정된 내용을 완료 버튼 클릭 시 상위 컴포넌트로 전달하여 업데이트를 반영할 수 있도록 합니다.
- * 취소 버튼을 통해 수정을 취소하고, 카드를 닫을 수도 있습니다.
- * 이미지 업로드를 위한 InputFileUpload 컴포넌트와 최종 수정 시간을 표시하는 TimeSince 컴포넌트도 포함하고 있습니다.
- */
-
 export default function EditCard({ id, editClose }) {
   //newsList에서 id일치하는 데이터 참조하기
   let newsData = useSelector(state => state.news.newsList);
@@ -50,8 +42,13 @@ export default function EditCard({ id, editClose }) {
 
   const handleFileSelect = files => {
     setSelectedFile(prev => [...prev, ...files]);
-    console.log("파일 첨부 후 selectedFile 상태:", selectedFile);
   };
+
+  //이미지 url 배열
+
+  const imageArr = newsData[0].imageUrl
+    ? newsData[0].imageUrl.split(";")
+    : [`https://picsum.photos/1920/1300?random=${newsData[0].id}`];
 
   return (
     <Card
@@ -91,24 +88,29 @@ export default function EditCard({ id, editClose }) {
           {TimeSince(newsData[0].updatedAt)}
         </Typography>
       </CardContent>
-      <CardMedia
-        component="img"
-        height={300}
-        image={newsData[0].imageUrl}
-        alt="random_img"
-        sx={{
-          cursor: "pointer",
-          "&:hover": {
-            transition: "transform 0.2s ease-in-out",
-            transform: "scale(1.05)",
-          },
-          width: "100%",
-          transition: "transform 0.2s ease-in-out",
-          transform: isTouched ? "scale(0.95)" : "scale(1)",
-        }}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      />
+      {imageArr.map((url, index) => {
+        return (
+          <CardMedia
+            key={index}
+            component="img"
+            height={300}
+            image={url}
+            alt="random_img"
+            sx={{
+              cursor: "pointer",
+              "&:hover": {
+                transition: "transform 0.2s ease-in-out",
+                transform: "scale(1.05)",
+              },
+              width: "100%",
+              transition: "transform 0.2s ease-in-out",
+              transform: isTouched ? "scale(0.95)" : "scale(1)",
+            }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          />
+        );
+      })}
 
       <Collapse in={true} timeout="auto" unmountOnExit>
         <CardContent
@@ -138,7 +140,7 @@ export default function EditCard({ id, editClose }) {
                   })
                 );
                 editClose();
-                window.location.reload();
+                //window.location.reload();
               }}
             >
               완료
