@@ -18,7 +18,6 @@ import { updateNews } from "../../../features/news/newsSlice";
 EditCard.propTypes = {
   id: PropTypes.number.isRequired,
   editClose: PropTypes.func.isRequired,
-  // editComplete: PropTypes.func.isRequired,
 };
 
 /**
@@ -139,7 +138,7 @@ export default function EditCard({ id, editClose }) {
                   })
                 );
                 editClose();
-                //window.location.reload(); // 새로고침 해주기
+                window.location.reload();
               }}
             >
               완료

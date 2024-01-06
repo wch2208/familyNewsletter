@@ -126,9 +126,7 @@ app.put("/news/:id", upload.array("photos"), async (req, res) => {
     if (req.files && req.files.length > 0) {
       imageUrls = req.files.map(file => file.location);
     } else {
-      imageUrls = article.imageUrl
-        ? article.imageUrl.split(";")
-        : ["https://picsum.photos/1920/1300"];
+      imageUrls = ["https://picsum.photos/1920/1300"];
     }
 
     const updatedData = {
