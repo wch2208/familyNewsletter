@@ -5,17 +5,26 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Collapse from "@mui/material/Collapse";
 import Typography from "@mui/material/Typography";
-import LongMenu from "./EditBtn";
 import Button from "@mui/material/Button";
 import { Stack, TextareaAutosize } from "@mui/material";
 import { useState } from "react";
 import PropTypes from "prop-types";
+import InputFileUpload from "../../../components/common/UploadBtn";
+import { TimeSince } from "../components/TimeSince";
 
 EditCard.propTypes = {
-  id: PropTypes.number.isRequired, // Use the appropriate type
-  editClose: PropTypes.func.isRequired, // Use the appropriate type
-  editComplete: PropTypes.func.isRequired, // Use the appropriate type
+  id: PropTypes.number.isRequired,
+  editClose: PropTypes.func.isRequired,
+  editComplete: PropTypes.func.isRequired,
 };
+
+/**
+ * EditCard 컴포넌트는 뉴스 기사의 제목과 내용을 수정할 수 있는 카드 형태의 UI를 제공합니다.
+ * 이 컴포넌트는 기사의 id를 받아 해당 뉴스 데이터를 참조하며,
+ * 수정된 내용을 완료 버튼 클릭 시 상위 컴포넌트로 전달하여 업데이트를 반영할 수 있도록 합니다.
+ * 취소 버튼을 통해 수정을 취소하고, 카드를 닫을 수도 있습니다.
+ * 이미지 업로드를 위한 InputFileUpload 컴포넌트와 최종 수정 시간을 표시하는 TimeSince 컴포넌트도 포함하고 있습니다.
+ */
 
 export default function EditCard({ id, editClose, editComplete }) {
   //newsList에서 id일치하는 데이터 참조하기
@@ -24,36 +33,21 @@ export default function EditCard({ id, editClose, editComplete }) {
 
   const [title, setTitle] = useState(newsData[0].title);
   const [content, setContent] = useState(newsData[0].content);
+  const [isTouched, setIsTouched] = useState(false);
+  const [photos, setPhotos] = useState([]);
 
-  //게시물 작성 경과 시간 표시
-  function timeSince(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.floor((now - date) / 1000);
+  //터치 감지
+  const handleTouchStart = () => {
+    setIsTouched(true);
+  };
 
-    let interval = seconds / 31536000; // 1년의 초
+  const handleTouchEnd = () => {
+    setIsTouched(false);
+  };
 
-    if (interval > 1) {
-      return Math.floor(interval) + "년 전";
-    }
-    interval = seconds / 2592000; // 1달의 초
-    if (interval > 1) {
-      return Math.floor(interval) + "달 전";
-    }
-    interval = seconds / 86400; // 1일의 초
-    if (interval > 1) {
-      return Math.floor(interval) + "일 전";
-    }
-    interval = seconds / 3600; // 1시간의 초
-    if (interval > 1) {
-      return Math.floor(interval) + "시간 전";
-    }
-    interval = seconds / 60; // 1분의 초
-    if (interval > 1) {
-      return Math.floor(interval) + "분 전";
-    }
-    return Math.floor(seconds) + "초 전";
-  }
+  const setPhotosFunc = photos => {
+    setPhotos(photos);
+  };
 
   return (
     <Card
@@ -87,19 +81,31 @@ export default function EditCard({ id, editClose, editComplete }) {
           justifyContent: "space-between",
         }}
       >
-        <LongMenu id={newsData[0].id} />
+        <InputFileUpload setPhotosFunc={setPhotosFunc} />
 
         <Typography variant="caption" sx={{ p: 1 }}>
-          {timeSince(newsData[0].updatedAt)}
+          {TimeSince(newsData[0].updatedAt)}
         </Typography>
       </CardContent>
       <CardMedia
         component="img"
         height={300}
-        //랜덤이미지 또는 S3 버킷에 업로드한 이미지 삽입
         image={newsData[0].imageUrl}
         alt="random_img"
+        sx={{
+          cursor: "pointer",
+          "&:hover": {
+            transition: "transform 0.2s ease-in-out",
+            transform: "scale(1.05)",
+          },
+          width: "100%",
+          transition: "transform 0.2s ease-in-out",
+          transform: isTouched ? "scale(0.95)" : "scale(1)",
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       />
+
       <Collapse in={true} timeout="auto" unmountOnExit>
         <CardContent
           sx={{ width: "99%", display: "flex", flexDirection: "column" }}
@@ -119,14 +125,20 @@ export default function EditCard({ id, editClose, editComplete }) {
               size={"large"}
               variant={"contained"}
               onClick={() => {
-                const payload = { id, title, content };
+                const payload = { id, title, content, photos };
                 editComplete(payload);
                 editClose();
+                // window.location.reload(); // 새로고침 해주기
               }}
             >
               완료
             </Button>
-            <Button size={"large"} variant={"outlined"} onClick={editClose}>
+            <Button
+              size={"large"}
+              variant={"outlined"}
+              onClick={editClose}
+              autoFocus
+            >
               취소
             </Button>
           </Stack>

@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 // 비동기 액션을 위한 thunk를 생성합니다.
 const newsPerPage = 10; // 페이지당 보여줄 뉴스 개수
@@ -13,6 +14,39 @@ export const fetchNews = createAsyncThunk(
     );
     let data = await response.json();
     return data;
+  }
+);
+
+//addNews() 함수 이 함수는 api에 post 요청을 보낸다.
+export const addNews = createAsyncThunk(
+  "news/addNews",
+  async ({ news, files }) => {
+    try {
+      const formData = new FormData();
+      formData.append("title", news.title);
+      formData.append("content", news.content);
+
+      if (files && files.length > 0) {
+        files.forEach(file => {
+          formData.append("photos", file);
+        });
+      }
+
+      const response = await axios.post(
+        "https://api.familynewsletter-won.com/news",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("addNews response data:", response.data);
+      return response.data;
+    } catch (error) {
+      console.log("addNews error: ", error);
+    }
   }
 );
 
@@ -48,7 +82,7 @@ const newsSlice = createSlice({
       state.newsList = state.newsList.map(news => {
         if (news.id === updatedNews.id) {
           //기존의 목록에서 아이디가 일치하는 대상을 제거하고 업데이트뉴스를 그 자리에 넣는다.
-          return { ...news, ...updatedNews };
+          return { ...news, ...updatedNews, photos: [...updatedNews.photos] };
         }
         return news; // 기존의 뉴스 목록을 그대로 반환한다.
       });

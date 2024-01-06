@@ -24,8 +24,9 @@ import OpenAI from "openai";
 import { useState, useEffect, useRef } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import InputFileUpload from "./components/UploadBtn";
+import InputFileUpload from "../../components/common/UploadBtn";
+import { useDispatch } from "react-redux";
+import { addNews } from "../../features/news/newsSlice";
 
 function ChatPage() {
   const navigate = useNavigate();
@@ -39,10 +40,11 @@ function ChatPage() {
   const [news, setNews] = useState({});
   const [end, setEnd] = useState(false);
   const [selectedFile, setSelectedFile] = useState([]);
+  const dispatch = useDispatch();
 
   //파일첨부하면 상태데이터로 등록되는지 확인
   useEffect(() => {
-    console.log("파일첨부:", selectedFile);
+    console.log("selectedFile 파일첨부:", selectedFile);
   }, [selectedFile]);
 
   // ---------------------------- 채팅창 컨테이너 스타일 -------------------------------//
@@ -148,36 +150,8 @@ function ChatPage() {
     }
   }
 
-  //뉴스기사 저장
-  const addNews = async (news, files) => {
-    try {
-      //formData 객체 생성
-      const formData = new FormData();
-      formData.append("title", news.title);
-      formData.append("content", news.content);
-      if (files && files.length > 0) {
-        files.forEach(file => {
-          formData.append("photos", file);
-        });
-      }
-
-      const response = await axios.post(
-        "https://api.familynewsletter-won.com/news",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log("Article added:", response.data); // 서버의 응답을 콘솔에 출력
-    } catch (error) {
-      console.error("Error adding news:", error);
-    }
-  };
-
   const handleFileSelect = files => {
-    setSelectedFile(prevFiles => [...prevFiles, ...files]);
+    setSelectedFile(prev => [...prev, ...files]);
   };
 
   return (
@@ -257,7 +231,7 @@ function ChatPage() {
             sx={{ color: "white" }}
             onClick={() => {
               setEnd(false);
-              addNews(news, selectedFile);
+              dispatch(addNews({ news, files: selectedFile }));
               setLoading(true);
               setTimeout(() => {
                 window.location.href = "/";
