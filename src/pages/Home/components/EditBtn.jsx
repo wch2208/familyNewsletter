@@ -1,3 +1,4 @@
+//EditBtn.jsx
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -5,10 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import {
-  storeDeleteNews,
-  storeUpdateNewsList,
-} from "../../../features/news/newsSlice";
+import { storeDeleteNews } from "../../../features/news/newsSlice";
 import EditCard from "../components/EditCard";
 import { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
@@ -32,22 +30,10 @@ export default function LongMenu(targetCard) {
     setAnchorEl(null);
   };
 
-  const editComplete = payload => {
-    dispatch(storeUpdateNewsList(payload));
-    //데이터베이스 수정 요청
-    const editNews = async id => {
-      try {
-        const response = await axios.put(
-          `https://api.familynewsletter-won.com/news/${id}`,
-          payload
-        );
-        console.log("Article edited:", response.data); // 서버의 응답을 콘솔에 출력
-      } catch (error) {
-        console.error("Error fetching news:", error);
-      }
-    };
-    editNews(targetCard.id);
-  };
+  // const editComplete = data => {
+  //   console.log("디스패치 전 최종 데이터:", data);
+  //   //dispatch(updateNews(data));
+  // };
 
   function handleEditDel(e) {
     if (e.target.innerText === "수정 ( Edit )") {
@@ -58,7 +44,7 @@ export default function LongMenu(targetCard) {
 
     if (e.target.innerText === "삭제 ( Delete )") {
       //전역상태 newsList에 삭제 요청 보내기
-      dispatch(storeDeleteNews(targetCard.id));
+      dispatch(storeDeleteNews(id));
     }
 
     if (e.target.innerText === "삭제 ( Delete )") {
@@ -73,7 +59,7 @@ export default function LongMenu(targetCard) {
           console.error("Error fetching news:", error);
         }
       };
-      deleteNews(targetCard.id);
+      deleteNews(id);
     }
   }
 
@@ -111,7 +97,7 @@ export default function LongMenu(targetCard) {
         >
           {options.map(option => (
             <MenuItem
-              id={targetCard.id}
+              id={id}
               key={option}
               divider={true}
               onClick={e => {
@@ -135,7 +121,7 @@ export default function LongMenu(targetCard) {
       {editOn ? (
         <>
           <Backdrop open={editOn} />
-          <EditCard id={id} editClose={editClose} editComplete={editComplete} />
+          <EditCard id={id} editClose={editClose} />
         </>
       ) : null}
     </>

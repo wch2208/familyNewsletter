@@ -1,3 +1,4 @@
+//newsSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -13,6 +14,7 @@ export const fetchNews = createAsyncThunk(
       `https://api.familynewsletter-won.com/news?limit=${limit}&offset=${offset}`
     );
     let data = await response.json();
+
     return data;
   }
 );
@@ -50,6 +52,47 @@ export const addNews = createAsyncThunk(
   }
 );
 
+export const updateNews = createAsyncThunk(
+  "news/updateNews",
+  async ({ id, title, content, files }, { rejectWithValue }) => {
+    try {
+      console.log(
+        "업데이트 뉴스 액션크리에이터에 전달된 인자:",
+        typeof id,
+        typeof title,
+        typeof content,
+        typeof files
+      );
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+
+      if (files && files.length > 0) {
+        files.forEach(file => {
+          formData.append("photos", file);
+        });
+      }
+
+      for (let [key, value] of formData.entries()) {
+        console.log("api 통신 시작!!", key, value);
+      }
+      const response = await axios.put(
+        `https://api.familynewsletter-won.com/news/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("updateNews response data:", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const newsSlice = createSlice({
   name: "news",
   initialState: {
@@ -72,21 +115,6 @@ const newsSlice = createSlice({
       const id = action.payload;
       state.newsList = state.newsList.filter(news => news.id !== id);
     },
-
-    // 수정 후 뉴스목록 업데이트 액션 크리에이터
-    storeUpdateNewsList(state, action) {
-      //전달 받은 객체를 하나의 변수에 할당
-      const updatedNews = action.payload;
-
-      //업데이트 하려면 기존의 뉴스 목록에서 수정할 뉴스를 참조
-      state.newsList = state.newsList.map(news => {
-        if (news.id === updatedNews.id) {
-          //기존의 목록에서 아이디가 일치하는 대상을 제거하고 업데이트뉴스를 그 자리에 넣는다.
-          return { ...news, ...updatedNews, photos: [...updatedNews.photos] };
-        }
-        return news; // 기존의 뉴스 목록을 그대로 반환한다.
-      });
-    },
   },
 
   //createAsyncThunk의해 생성된 비동기 작업을 관리하는 코드
@@ -108,19 +136,27 @@ const newsSlice = createSlice({
         // 리미트로 5개를 가져오는데, 실제로 가져온 데이터(action.payload)가 5보다 적으면
         // fasle로 변하면서 더이상 next 속성이 동작하지 않는다.
         state.hasMore = action.payload.length === newsPerPage;
-        console.log(action.payload);
+        console.log("여기는 fetchNews 성공 builder:", action.payload);
       })
       .addCase(fetchNews.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+      })
+      .addCase(updateNews.fulfilled, (state, action) => {
+        // 업데이트된 뉴스로 상태를 업데이트
+        const updatedNews = action.payload;
+        console.log("여기는 updateNews 성공 builder:", updatedNews);
+        state.newsList = state.newsList.map(news =>
+          news.id === updatedNews.id ? { ...news, ...updatedNews } : news
+        );
+      })
+      .addCase(updateNews.rejected, (state, action) => {
+        // 에러 처리...
+        state.error = action.payload || "Failed to update news";
       });
   },
 });
 
-export const {
-  storeLatestFiveNewsTitles,
-  storeDeleteNews,
-  storeUpdateNewsList,
-} = newsSlice.actions;
+export const { storeLatestFiveNewsTitles, storeDeleteNews } = newsSlice.actions;
 
 export default newsSlice.reducer;

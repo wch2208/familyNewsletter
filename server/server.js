@@ -115,15 +115,30 @@ app.post("/news", upload.array("photos"), async (req, res) => {
   }
 });
 
-app.put("/news/:id", async (req, res) => {
+app.put("/news/:id", upload.array("photos"), async (req, res) => {
   try {
     const article = await NewsArticle.findByPk(req.params.id);
-    if (article) {
-      await article.update(req.body);
-      res.send(article);
-    } else {
-      res.status(404).send("Article not found");
+    if (!article) {
+      return res.status(404).send("Article not found");
     }
+
+    let imageUrls = [];
+    if (req.files && req.files.length > 0) {
+      imageUrls = req.files.map(file => file.location);
+    } else {
+      imageUrls = article.imageUrl
+        ? article.imageUrl.split(";")
+        : ["https://picsum.photos/1920/1300"];
+    }
+
+    const updatedData = {
+      title: req.body.title || article.title,
+      content: req.body.content || article.content,
+      imageUrl: imageUrls.join(";"),
+    };
+
+    await article.update(updatedData);
+    res.send(article);
   } catch (error) {
     res.status(400).send(error);
   }

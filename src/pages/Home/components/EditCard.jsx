@@ -1,3 +1,4 @@
+//EditCard.jsx
 import { useSelector } from "react-redux";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -11,11 +12,13 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import InputFileUpload from "../../../components/common/UploadBtn";
 import { TimeSince } from "../components/TimeSince";
+import { useDispatch } from "react-redux";
+import { updateNews } from "../../../features/news/newsSlice";
 
 EditCard.propTypes = {
   id: PropTypes.number.isRequired,
   editClose: PropTypes.func.isRequired,
-  editComplete: PropTypes.func.isRequired,
+  // editComplete: PropTypes.func.isRequired,
 };
 
 /**
@@ -26,15 +29,16 @@ EditCard.propTypes = {
  * 이미지 업로드를 위한 InputFileUpload 컴포넌트와 최종 수정 시간을 표시하는 TimeSince 컴포넌트도 포함하고 있습니다.
  */
 
-export default function EditCard({ id, editClose, editComplete }) {
+export default function EditCard({ id, editClose }) {
   //newsList에서 id일치하는 데이터 참조하기
   let newsData = useSelector(state => state.news.newsList);
   newsData = newsData.filter(news => news.id === id);
+  const dispatch = useDispatch();
 
-  const [title, setTitle] = useState(newsData[0].title);
-  const [content, setContent] = useState(newsData[0].content);
+  const [title, setTitle] = useState(newsData[0]?.title);
+  const [content, setContent] = useState(newsData[0]?.content);
   const [isTouched, setIsTouched] = useState(false);
-  const [photos, setPhotos] = useState([]);
+  const [selectedFile, setSelectedFile] = useState([]);
 
   //터치 감지
   const handleTouchStart = () => {
@@ -45,8 +49,9 @@ export default function EditCard({ id, editClose, editComplete }) {
     setIsTouched(false);
   };
 
-  const setPhotosFunc = photos => {
-    setPhotos(photos);
+  const handleFileSelect = files => {
+    setSelectedFile(prev => [...prev, ...files]);
+    console.log("파일 첨부 후 selectedFile 상태:", selectedFile);
   };
 
   return (
@@ -64,7 +69,7 @@ export default function EditCard({ id, editClose, editComplete }) {
         sx={{ pl: 2, pr: 2, pb: 0 }}
         title={
           <TextareaAutosize
-            defaultValue={newsData[0].title}
+            defaultValue={title}
             style={{ fontSize: "16px", width: "100%" }}
             maxRows={2}
             onChange={e => setTitle(e.target.value)}
@@ -81,7 +86,7 @@ export default function EditCard({ id, editClose, editComplete }) {
           justifyContent: "space-between",
         }}
       >
-        <InputFileUpload setPhotosFunc={setPhotosFunc} />
+        <InputFileUpload onFileSelect={handleFileSelect} />
 
         <Typography variant="caption" sx={{ p: 1 }}>
           {TimeSince(newsData[0].updatedAt)}
@@ -111,7 +116,7 @@ export default function EditCard({ id, editClose, editComplete }) {
           sx={{ width: "99%", display: "flex", flexDirection: "column" }}
         >
           <TextareaAutosize
-            defaultValue={newsData[0].content}
+            defaultValue={content}
             style={{ fontSize: "14px" }}
             maxRows={10}
             onChange={e => setContent(e.target.value)}
@@ -125,10 +130,16 @@ export default function EditCard({ id, editClose, editComplete }) {
               size={"large"}
               variant={"contained"}
               onClick={() => {
-                const payload = { id, title, content, photos };
-                editComplete(payload);
+                dispatch(
+                  updateNews({
+                    id,
+                    title,
+                    content,
+                    files: selectedFile,
+                  })
+                );
                 editClose();
-                // window.location.reload(); // 새로고침 해주기
+                //window.location.reload(); // 새로고침 해주기
               }}
             >
               완료
