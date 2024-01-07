@@ -10,7 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LongMenu from "./EditBtn";
-import { useTheme } from "@mui/material";
+
 import { TimeSince } from "../components/TimeSince";
 
 //확장 버튼 애니메이션 스타일
@@ -24,37 +24,6 @@ const ExpandMore = styled(props => {
   transition: theme.transitions.create("transform", {
     duration: theme.transitions.duration.shortest,
   }),
-}));
-
-//본문 요약 애니메이션 스타일
-const AbbreviateAnimatedTypography = styled(props => {
-  // eslint-disable-next-line no-unused-vars
-  const { expand, ...other } = props;
-  return <Typography {...other} />;
-})(({ expand }) => ({
-  animation: expand
-    ? "AbbreviateMoveAndFadeIn 0.3s ease-in-out forwards"
-    : "AbbreviateMoveAndFadeOut 0.3s ease-in-out forwards",
-  "@keyframes AbbreviateMoveAndFadeIn": {
-    from: {
-      transform: "translateY(0)",
-      opacity: 1,
-    },
-    to: {
-      transform: "translateY(40px)",
-      opacity: 0,
-    },
-  },
-  "@keyframes AbbreviateMoveAndFadeOut": {
-    from: {
-      transform: "translateY(40px)",
-      opacity: 0,
-    },
-    to: {
-      transform: "translateY(0)",
-      opacity: 1,
-    },
-  },
 }));
 
 //본문 내용 애니메이션 스타일
@@ -89,8 +58,6 @@ const AnimatedTypography = styled(props => {
 }));
 
 export default function CardComponent(newsData) {
-  const theme = useTheme();
-
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -111,14 +78,21 @@ export default function CardComponent(newsData) {
         maxWidth: "1920px",
         borderRadius: "50px",
         mt: "20px",
-        mb: "20px",
+        mb: "0px",
         ml: "auto",
         mr: "auto",
         pr: "20px",
         pl: "20px",
       }}
     >
-      <CardHeader title={newsData.title} />
+      <CardHeader
+        sx={{ mb: 0, pb: 0 }}
+        title={
+          <Typography sx={{ height: "64px", overflow: "hidden" }} variant="h6">
+            {newsData.title}
+          </Typography>
+        }
+      />
       <CardContent
         sx={{
           m: 0,
@@ -144,12 +118,6 @@ export default function CardComponent(newsData) {
               overflow: "hidden",
               objectPosition: "center",
               height: "200px",
-              [theme.breakpoints.up("sm")]: {
-                height: "600px",
-              },
-              [theme.breakpoints.up("md")]: {
-                height: "800px",
-              },
             }}
             image={url}
             alt="random_img"
@@ -157,14 +125,6 @@ export default function CardComponent(newsData) {
         );
       })}
 
-      <CardContent
-        onClick={handleExpandClick}
-        sx={{ height: "60px", ml: 2, overflow: "hidden", color: "#D3D3D3" }}
-      >
-        <AbbreviateAnimatedTypography expand={expanded}>
-          {newsData.content}
-        </AbbreviateAnimatedTypography>
-      </CardContent>
       <CardActions disableSpacing>
         <ExpandMore
           sx={{ width: "100%" }}

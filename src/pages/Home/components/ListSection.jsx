@@ -28,7 +28,7 @@ const ListSection = () => {
     >
       <Grid container id="list-section">
         {newsList.map(newsData => (
-          <Grid item xs={12} lg={6} key={newsData.id}>
+          <Grid item xs={12} sm={6} md={4} lg={6} xl={3} key={newsData.id}>
             <CardComponent {...newsData} />
           </Grid>
         ))}
