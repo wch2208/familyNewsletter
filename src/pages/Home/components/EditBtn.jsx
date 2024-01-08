@@ -44,17 +44,18 @@ export default function LongMenu(targetCard) {
 
     if (e.target.innerText === "삭제 ( Delete )") {
       //데이터베이스에 삭제 요청 보내기
-      const deleteNews = async id => {
+      setId(targetCard.id);
+      const deleteNews = async () => {
         try {
           const response = await axios.delete(
-            `https://api.familynewsletter-won.com/news/${id}`
+            `https://api.familynewsletter-won.com/news/${targetCard.id}`
           );
           console.log("Article deleted:", response.data); // 서버의 응답을 콘솔에 출력
         } catch (error) {
           console.error("Error fetching news:", error);
         }
       };
-      deleteNews(id);
+      deleteNews();
     }
   }
 
