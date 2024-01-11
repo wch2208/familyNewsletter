@@ -43,33 +43,27 @@ function ChatPage() {
   const dispatch = useDispatch();
 
   // ---------------------------- 채팅창 컨테이너 스타일 -------------------------------//
-  const StyledContainer = styled(Grid)(() => ({
+  const StyledContainer = styled(Grid)(({ theme }) => ({
     backgroundColor: "#bacee0",
-    minHeight: "100vh",
-    "@supports (-webkit-appearance:none) and (stroke-color: transparent)": {
-      minHeight: "-webkit-fill-available",
+    height: "100vh",
+    [theme.breakpoints.down("sm")]: {
+      height: "calc(100vh - 80px)",
     },
     width: "100vw",
-    margin: "0, auto",
+    marginTop: 0,
     paddingTop: "10px",
     paddingLeft: "20px",
     paddingRight: "20px",
   }));
 
   // ---------------------------- 대화창 컴포넌트 스타일 -------------------------------//
-  const StyledChat = styled(Grid)(({ theme }) => ({
-    maxHeight: "calc(84vh - 64px)",
-    minHeight: "calc(84vh - 64px)",
+  const StyledChat = styled(Grid)(() => ({
+    height: "70vh",
     overflowY: "auto",
     mb: 0.5,
-
-    // 미디어 쿼리를 사용하여 브레이크포인트에 따른 스타일 정의
-    [theme.breakpoints.up("md")]: {
-      maxHeight: "calc(64vh - 64px)",
-    },
   }));
 
-  //스레드를 생성, 전체화면모드 on
+  //스레드를 생성
   useEffect(() => {
     async function createThread() {
       if (threadId === "") {
@@ -314,6 +308,7 @@ function ChatPage() {
         <Paper
           variant="outlined"
           sx={{
+            mb: 1.5,
             display: "flex",
             alignItems: "center",
             bgcolor: loading || messageList.length == 0 ? "gray" : false,
