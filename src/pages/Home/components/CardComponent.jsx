@@ -88,7 +88,13 @@ export default function CardComponent(newsData) {
       <CardHeader
         sx={{ mb: 0, pb: 0 }}
         title={
-          <Typography sx={{ height: "64px", overflow: "hidden" }} variant="h6">
+          <Typography
+            sx={{
+              height: "64px",
+              overflow: "hidden",
+            }}
+            variant="h6"
+          >
             {newsData.title}
           </Typography>
         }

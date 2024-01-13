@@ -33,7 +33,7 @@ function HeroSection() {
         variant="h2"
         sx={{ zIndex: 1, position: "absolute", top: "100px" }}
       >
-        Family News letter
+        Family Newsletter
       </Typography>
 
       <TextSlide />
