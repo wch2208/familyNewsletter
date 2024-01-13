@@ -40,7 +40,7 @@ function HeroSection() {
 
       <Typography
         xs={12}
-        variant="overline"
+        variant="subtitle1"
         sx={{
           zIndex: 1,
           position: "absolute",
