@@ -30,7 +30,6 @@ import { addNews } from "../../features/news/newsSlice";
 
 function ChatPage() {
   const navigate = useNavigate();
-  //const apiKey = import.meta.env.VITE_API_KEY;
   const openai = new OpenAI({
     apiKey: import.meta.env.VITE_API_KEY,
     dangerouslyAllowBrowser: true,
