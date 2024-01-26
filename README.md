@@ -36,7 +36,9 @@ https://familynewsletter-won.com
 
 Frontend: `React`, `Redux`, `Redux-toolkit`, `MUI`
 
-Backend: `AWS`(`EC2`, `RDS`, `S3`, `Route 53`, `Cloudfront`), OpenAI `Assistants API`
+Backend: `AWS`(`EC2`, `RDS`, `S3`), OpenAI `Assistants API`
+
+Deploy: `AWS`(`S3`, `Route53`, `CloudFront`), `GitHub Actions`
 
 ---
 
