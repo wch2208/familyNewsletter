@@ -47,7 +47,7 @@ function ChatPage() {
   // ---------------------------- 채팅창 컨테이너 스타일 -------------------------------//
   const StyledContainer = styled(Grid)(({ theme }) => ({
     backgroundColor: "#bacee0",
-    height: "100vh",
+    height: "100%",
     [theme.breakpoints.down("sm")]: {
       // height: "calc(100vh - 80px)",
     },
