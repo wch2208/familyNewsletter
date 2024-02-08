@@ -49,7 +49,7 @@ function ChatPage() {
     backgroundColor: "#bacee0",
     height: "100%",
     [theme.breakpoints.down("sm")]: {
-      // height: "calc(100vh - 80px)",
+      height: "calc(100vh - 80px)",
     },
     width: "100vw",
     marginTop: 0,
