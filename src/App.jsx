@@ -1,5 +1,6 @@
 import ChatPage from "./pages/Chat/ChatPage";
 import HomePage from "./pages/Home/HomePage";
+import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
