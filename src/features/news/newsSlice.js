@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // 비동기 액션을 위한 thunk를 생성합니다.
-const newsPerPage = 10; // 페이지당 보여줄 뉴스 개수
+const newsPerPage = 5; // 페이지당 보여줄 뉴스 개수
 export const fetchNews = createAsyncThunk(
   "news/fetchNews",
   async (_, { getState }) => {
