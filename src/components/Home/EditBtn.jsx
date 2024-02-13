@@ -6,8 +6,8 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { storeDeleteNews } from "../../../features/news/newsSlice";
-import EditCard from "../components/EditCard";
+import { storeDeleteNews } from "../../features/news/newsSlice";
+import EditCard from "./EditCard";
 import { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 

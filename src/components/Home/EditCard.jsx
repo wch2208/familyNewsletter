@@ -10,10 +10,10 @@ import Button from "@mui/material/Button";
 import { Stack, TextareaAutosize } from "@mui/material";
 import { useState } from "react";
 import PropTypes from "prop-types";
-import InputFileUpload from "../../../components/common/UploadBtn";
-import { TimeSince } from "../components/TimeSince";
+import InputFileUpload from "../common/UploadBtn";
+import { TimeSince } from "../../utils/TimeSince";
 import { useDispatch } from "react-redux";
-import { updateNews } from "../../../features/news/newsSlice";
+import { updateNews } from "../../features/news/newsSlice";
 
 EditCard.propTypes = {
   id: PropTypes.number.isRequired,

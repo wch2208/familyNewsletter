@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import TextSlide from "./TextSlide";
-import CustomVideo from "./ui/CustomVideo.jsx";
-import HeroSectionContainer from "./ui/HeroSectionContainer";
-import TitleTypography from "./ui/TitleTypography";
-import BtnInfo from "./ui/BtnInfo";
-import YellowBtn from "./ui/YellowBtn";
-import ArrowDown from "./ui/ArrowDown";
+import CustomVideo from "../ui/CustomVideo";
+import HeroSectionContainer from "../ui/HeroSectionContainer";
+import TitleTypography from "../ui/TitleTypography";
+import BtnInfo from "../ui/BtnInfo";
+import YellowBtn from "../ui/YellowBtn";
+import ArrowDown from "../ui/ArrowDown";
 
 function HeroSection() {
   return (

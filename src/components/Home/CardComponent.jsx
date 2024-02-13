@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LongMenu from "./EditBtn";
 
-import { TimeSince } from "../components/TimeSince";
+import { TimeSince } from "../../utils/TimeSince";
 
 //확장 버튼 애니메이션 스타일
 const ExpandMore = styled(props => {

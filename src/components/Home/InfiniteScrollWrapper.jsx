@@ -1,5 +1,5 @@
 import InfiniteScroll from "react-infinite-scroll-component";
-import { fetchNews } from "../../../features/news/newsSlice";
+import { fetchNews } from "../../features/news/newsSlice";
 import { useSelector, useDispatch } from "react-redux";
 
 const InfiniteScrollWrapper = ({ children }) => {

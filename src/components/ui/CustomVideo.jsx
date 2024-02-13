@@ -1,6 +1,6 @@
 import { styled } from "@mui/material";
 import React from "react";
-import mainVideo from "../../../../assets/mainVideo.mp4";
+import mainVideo from "../../assets/mainVideo.mp4";
 
 const Video = styled("video")({
   pointerEvents: "none",

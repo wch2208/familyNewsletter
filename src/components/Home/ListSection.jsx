@@ -1,5 +1,5 @@
 import InfiniteScrollWrapper from "./InfiniteScrollWrapper";
-import NewsList from "../components/NewsList";
+import NewsList from "./NewsList";
 
 const ListSection = () => {
   return (

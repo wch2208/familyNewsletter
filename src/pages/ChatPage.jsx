@@ -24,9 +24,9 @@ import OpenAI from "openai";
 import { useState, useEffect, useRef } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
-import InputFileUpload from "../../components/common/UploadBtn.jsx";
+import InputFileUpload from "../components/common/UploadBtn.jsx";
 import { useDispatch } from "react-redux";
-import { addNews } from "../../features/news/newsSlice";
+import { addNews } from "../features/news/newsSlice";
 
 function ChatPage() {
   const navigate = useNavigate();

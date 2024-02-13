@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { storeLatestFiveNewsTitles } from "../../../features/news/newsSlice";
+import { storeLatestFiveNewsTitles } from "../../features/news/newsSlice";
 
 import { motion } from "framer-motion";
 
