@@ -7,14 +7,8 @@ import {
   IconButton,
   Paper,
   Grid,
-  styled,
-  AppBar,
-  Toolbar,
-  Typography,
-  Box,
   Backdrop,
   CircularProgress,
-  Button,
   Stack,
   Fab,
 } from "@mui/material";
@@ -22,14 +16,14 @@ import SendIcon from "@mui/icons-material/Send";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import OpenAI from "openai";
 import { useState, useEffect, useRef } from "react";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate } from "react-router-dom";
 import InputFileUpload from "../components/common/UploadBtn.jsx";
 import { useDispatch } from "react-redux";
 import { addNews } from "../features/news/newsSlice";
+import ChatContainer from "../components/Chat/ChatContainer";
+import StyledChat from "../components/Chat/StyledChat";
+import ChatAppBar from "../components/Chat/ChatAppBar";
 
 function ChatPage() {
-  const navigate = useNavigate();
   const openai = new OpenAI({
     apiKey: import.meta.env.VITE_API_KEY,
     dangerouslyAllowBrowser: true,
@@ -43,28 +37,6 @@ function ChatPage() {
   const [end, setEnd] = useState(false);
   const [selectedFile, setSelectedFile] = useState([]);
   const dispatch = useDispatch();
-
-  // ---------------------------- 채팅창 컨테이너 스타일 -------------------------------//
-  const StyledContainer = styled(Grid)(({ theme }) => ({
-    backgroundColor: "#bacee0",
-    height: "100vh",
-    [theme.breakpoints.down("sm")]: {
-      height: "calc(100vh - 80px)",
-      border: "1px solid black",
-    },
-    width: "100vw",
-    marginTop: 0,
-    paddingTop: "10px",
-    paddingLeft: "20px",
-    paddingRight: "20px",
-  }));
-
-  // ---------------------------- 대화창 컴포넌트 스타일 -------------------------------//
-  const StyledChat = styled(Grid)(() => ({
-    height: "70vh",
-    overflowY: "auto",
-    mb: 0.5,
-  }));
 
   //스레드를 생성
   useEffect(() => {
@@ -145,36 +117,9 @@ function ChatPage() {
   };
 
   return (
-    <StyledContainer container justifyContent="center" alignItems="center">
-      <AppBar
-        position="static"
-        sx={{ borderRadius: "10px", backgroundColor: "white" }}
-      >
-        <Toolbar>
-          <IconButton
-            edge="start"
-            sx={{ color: "black", marginRight: "8px", zIndex: 1 }}
-            onClick={() => navigate(-1)}
-          >
-            <ArrowBackIcon />
-          </IconButton>
-          <Box
-            sx={{
-              width: "100vw",
-              left: 0,
-              justifyContent: "center",
-              display: "flex",
-              position: "fixed",
-            }}
-          >
-            <Typography sx={{ color: "black" }}>
-              Family Newsletter Interview
-            </Typography>
-          </Box>
-        </Toolbar>
-      </AppBar>
-
-      <StyledChat id="chatScroll" item xs={12} ref={chatScrollRef}>
+    <ChatContainer>
+      <ChatAppBar />
+      <StyledChat item xs={12} ref={chatScrollRef}>
         <List>
           {messageList.map((data, index) =>
             data.role === "assistant" ? (
@@ -215,21 +160,16 @@ function ChatPage() {
             height: "5%",
             zIndex: 1,
           }}
+          onClick={() => {
+            setEnd(false);
+            dispatch(addNews({ news, files: selectedFile }));
+            setLoading(true);
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 2000);
+          }}
         >
-          <Button
-            variant="text"
-            sx={{ color: "white" }}
-            onClick={() => {
-              setEnd(false);
-              dispatch(addNews({ news, files: selectedFile }));
-              setLoading(true);
-              setTimeout(() => {
-                window.location.href = "/";
-              }, 2000);
-            }}
-          >
-            이 인터뷰 결과를 게시하기
-          </Button>
+          이 인터뷰 결과를 게시하기
         </Fab>
       ) : messageList.length === 0 ? (
         <Stack direction="row">
@@ -244,17 +184,11 @@ function ChatPage() {
               bottom: "50%",
               zIndex: 1,
             }}
+            onClick={() => {
+              handleSendMessage("안녕?");
+            }}
           >
-            <Button
-              position="absolute"
-              variant="text"
-              sx={{ color: "white" }}
-              onClick={() => {
-                handleSendMessage("안녕?");
-              }}
-            >
-              인터뷰 시작
-            </Button>
+            인터뷰 시작
           </Fab>
           <Fab
             color="primary"
@@ -267,18 +201,13 @@ function ChatPage() {
               bottom: "40%",
               zIndex: 1,
             }}
+            onClick={() => {
+              handleSendMessage(
+                "안녕? 내 이름은 Tester, 근황에 대해서 이야기할게. 나는 지난주에 콘서트에 다녀왔어. 자주 듣는 곡이었지만 라이브로 들으면 평소와 다른 감동이 느껴져서 콘서트에 가는 것이 좋더라. 좋아하는 가수가 있다면 콘서트에 가는 것을 추천해"
+              );
+            }}
           >
-            <Button
-              variant="text"
-              sx={{ color: "white" }}
-              onClick={() => {
-                handleSendMessage(
-                  "안녕? 내 이름은 Tester, 근황에 대해서 이야기할게. 나는 지난주에 콘서트에 다녀왔어. 자주 듣는 곡이었지만 라이브로 들으면 평소와 다른 감동이 느껴져서 콘서트에 가는 것이 좋더라. 좋아하는 가수가 있다면 콘서트에 가는 것을 추천해"
-                );
-              }}
-            >
-              테스트 실행
-            </Button>
+            테스트 실행
           </Fab>
         </Stack>
       ) : (
@@ -293,17 +222,12 @@ function ChatPage() {
             top: "13%",
             zIndex: 1,
           }}
+          onClick={() => {
+            handleSendMessage("인터뷰 종료");
+            setEnd(true);
+          }}
         >
-          <Button
-            variant="text"
-            sx={{ color: "white" }}
-            onClick={() => {
-              handleSendMessage("인터뷰 종료");
-              setEnd(true);
-            }}
-          >
-            인터뷰 종료
-          </Button>
+          인터뷰 종료
         </Fab>
       )}
 
@@ -376,7 +300,7 @@ function ChatPage() {
       <Backdrop open={loading} sx={{ zIndex: 10 }}>
         <CircularProgress color="primary" />
       </Backdrop>
-    </StyledContainer>
+    </ChatContainer>
   );
 }
 export default ChatPage;
