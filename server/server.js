@@ -147,7 +147,7 @@ app.delete("/news/:id", async (req, res) => {
     const article = await NewsArticle.findByPk(req.params.id);
     if (article) {
       await article.destroy();
-      res.send("Article deleted");
+      res.send(article);
     } else {
       res.status(404).send("Article not found");
     }

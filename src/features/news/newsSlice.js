@@ -10,12 +10,18 @@ export const fetchNews = createAsyncThunk(
     const currentPage = getState().news.currentPage;
     const limit = newsPerPage;
     const offset = (currentPage - 1) * limit;
-    const response = await fetch(
-      `https://api.familynewsletter-won.com/news?limit=${limit}&offset=${offset}`
-    );
-    let data = await response.json();
 
-    return data;
+    const response = await axios.get(
+      `https://api.familynewsletter-won.com/news`,
+      {
+        params: {
+          limit: limit,
+          offset: offset,
+        },
+      }
+    );
+
+    return response.data;
   }
 );
 
@@ -81,6 +87,18 @@ export const updateNews = createAsyncThunk(
   }
 );
 
+//뉴스 삭제 함수 생성
+export const deleteNews = createAsyncThunk("news/deleteNews", async id => {
+  try {
+    const response = await axios.delete(
+      `https://api.familynewsletter-won.com/news/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching news:", error);
+  }
+});
+
 const newsSlice = createSlice({
   name: "news",
   initialState: {
@@ -92,16 +110,9 @@ const newsSlice = createSlice({
     error: null,
   },
   reducers: {
-    // 여기에 필요한 액션 리듀서를 추가할 수 있습니다.
-
     //newsList의 최신 게시물의 제목 5개를 포함하는 문자열 배열을 반환합니다.
     storeLatestFiveNewsTitles(state, action) {
       state.titleList = action.payload.slice(0, 5).map(news => news.title);
-    },
-    // 삭제 후 newsList가 감소하는 액션 크리에이터
-    storeDeleteNews(state, action) {
-      const id = action.payload;
-      state.newsList = state.newsList.filter(news => news.id !== id);
     },
   },
 
@@ -137,12 +148,19 @@ const newsSlice = createSlice({
         );
       })
       .addCase(updateNews.rejected, (state, action) => {
-        // 에러 처리...
+        // 에러 처리
         state.error = action.payload || "Failed to update news";
+      })
+      .addCase(deleteNews.fulfilled, (state, action) => {
+        const deletedNews = action.payload;
+        console.log("뉴스 삭제 완료", action.payload);
+        state.newsList = state.newsList.filter(
+          news => news.id !== deletedNews.id
+        );
       });
   },
 });
 
-export const { storeLatestFiveNewsTitles, storeDeleteNews } = newsSlice.actions;
+export const { storeLatestFiveNewsTitles } = newsSlice.actions;
 
 export default newsSlice.reducer;

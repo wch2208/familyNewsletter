@@ -4,9 +4,8 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import axios from "axios";
 import { useDispatch } from "react-redux";
-import { storeDeleteNews } from "../../features/news/newsSlice";
+import { deleteNews } from "../../features/news/newsSlice";
 import EditCard from "./EditCard";
 import { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
@@ -38,24 +37,8 @@ export default function LongMenu(targetCard) {
     }
 
     if (e.target.innerText === "삭제 ( Delete )") {
-      //전역상태 newsList에 삭제 요청 보내기
-      dispatch(storeDeleteNews(id));
-    }
-
-    if (e.target.innerText === "삭제 ( Delete )") {
       //데이터베이스에 삭제 요청 보내기
-      setId(targetCard.id);
-      const deleteNews = async () => {
-        try {
-          const response = await axios.delete(
-            `https://api.familynewsletter-won.com/news/${targetCard.id}`
-          );
-          console.log("Article deleted:", response.data); // 서버의 응답을 콘솔에 출력
-        } catch (error) {
-          console.error("Error fetching news:", error);
-        }
-      };
-      deleteNews();
+      dispatch(deleteNews(targetCard.id));
     }
   }
 
