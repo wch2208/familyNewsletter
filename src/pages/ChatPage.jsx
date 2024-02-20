@@ -17,6 +17,7 @@ function ChatPage() {
     handleSendMessage,
     handleFileSelect,
     chatScrollRef,
+    news,
   } = useChat();
 
   return (
@@ -29,6 +30,8 @@ function ChatPage() {
         messageList={messageList}
         setLoading={setLoading}
         handleSendMessage={handleSendMessage}
+        news={news}
+        selectedFile={selectedFile}
       />
       <ChatInput
         loading={loading}

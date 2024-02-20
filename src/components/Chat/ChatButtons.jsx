@@ -1,9 +1,17 @@
 import { Stack, Fab } from "@mui/material";
 import { useState } from "react";
 import { addNews } from "../../features/news/newsSlice";
+import { useDispatch } from "react-redux";
 
-const ChatButtons = ({ messageList, setLoading, handleSendMessage }) => {
+const ChatButtons = ({
+  messageList,
+  setLoading,
+  handleSendMessage,
+  news,
+  selectedFile,
+}) => {
   const [end, setEnd] = useState(false);
+  const dispatch = useDispatch();
 
   return (
     <>
