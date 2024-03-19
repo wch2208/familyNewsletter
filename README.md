@@ -1,8 +1,5 @@
 # 가족신문: chatGPT로 인터뷰
 
-배포 링크
-
-https://familynewsletter-won.com
 
 ---
 
